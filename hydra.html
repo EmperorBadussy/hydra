@@ -1,0 +1,2368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HYDRA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   HYDRA — SERPENT GREEN Design System
+   OLED-black + monochromatic green + glassmorphism
+   Harvesting Your DRM Resource Archives
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg-void: #000000;
+  --bg-surface: #060F06;
+  --bg-raised: #0A190A;
+  --bg-elevated: #0C200C;
+  --bg-hover: #0F300F;
+  --green-dim: #0D360D;
+  --green-muted: #0E640E;
+  --green-core: #22C55E;
+  --green-bright: #34D399;
+  --green-vivid: #6EE7A0;
+  --green-hot: #A5F3C0;
+  --green-white: #ECFFF0;
+  --red-core: #ef4444;
+  --amber-core: #f59e0b;
+  --cyan-core: #06b6d4;
+  --font-display: 'Orbitron', sans-serif;
+  --font-body: 'Rajdhani', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --glow-subtle: 0 0 10px rgba(34,197,94,0.15);
+  --glow-medium: 0 0 20px rgba(34,197,94,0.25), 0 0 40px rgba(34,197,94,0.15);
+  --glow-intense: 0 0 30px rgba(34,197,94,0.4), 0 0 60px rgba(34,197,94,0.25);
+  --glow-neon: 0 0 10px rgba(110,231,160,0.6), 0 0 30px rgba(52,211,153,0.4), 0 0 60px rgba(34,197,94,0.3), 0 0 100px rgba(34,197,94,0.15);
+  --glass-bg: rgba(10,25,10,0.7);
+  --glass-border: rgba(34,197,94,0.15);
+  --glass-blur: blur(20px) saturate(1.2);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --sidebar-width: 240px;
+  --titlebar-height: 38px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--green-muted); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--green-core); }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-void);
+  color: var(--green-white);
+  overflow: hidden;
+  height: 100vh;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ── TITLEBAR ── */
+.titlebar {
+  height: var(--titlebar-height);
+  background: rgba(6,15,6,0.9);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  -webkit-app-region: drag;
+  border-bottom: 1px solid rgba(34,197,94,0.1);
+  position: relative;
+  z-index: 1000;
+}
+.titlebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 4px;
+}
+.titlebar-logo {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--green-bright);
+  text-shadow: 0 0 15px rgba(52,211,153,0.5);
+}
+.titlebar-version {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--green-muted);
+  letter-spacing: 1px;
+}
+.titlebar-controls {
+  display: flex;
+  -webkit-app-region: no-drag;
+}
+.titlebar-btn {
+  width: 38px;
+  height: var(--titlebar-height);
+  background: none;
+  border: none;
+  color: var(--green-hot);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.titlebar-btn:hover { background: rgba(34,197,94,0.15); }
+.titlebar-btn.close-btn:hover { background: var(--red-core); color: #fff; }
+.titlebar-btn svg { width: 14px; height: 14px; }
+
+/* ── LAYOUT ── */
+.app-layout {
+  display: flex;
+  height: calc(100vh - var(--titlebar-height) - 28px);
+  position: relative;
+  z-index: 1;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  background: rgba(6,15,6,0.85);
+  backdrop-filter: blur(20px) saturate(1.2);
+  border-right: 1px solid rgba(34,197,94,0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: inset -1px 0 0 rgba(34,197,94,0.05);
+}
+.sidebar-header {
+  padding: 20px 16px 12px;
+  border-bottom: 1px solid rgba(34,197,94,0.08);
+}
+.sidebar-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  background: linear-gradient(135deg, var(--green-vivid), var(--green-hot));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sidebar-title .serpent-icon {
+  font-size: 22px;
+  -webkit-text-fill-color: var(--green-bright);
+  filter: drop-shadow(0 0 6px rgba(34,197,94,0.5));
+}
+.sidebar-subtitle {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--green-muted);
+  letter-spacing: 1.5px;
+  margin-top: 2px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+.nav-section-label {
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--green-muted);
+  padding: 16px 16px 6px;
+  text-transform: uppercase;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-left: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+.nav-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--green-bright);
+  box-shadow: 0 0 8px rgba(52,211,153,0.5), 0 0 16px rgba(52,211,153,0.3);
+  transform: scaleY(0);
+  transition: transform 0.25s ease;
+}
+.nav-item:hover::before { transform: scaleY(1); }
+.nav-item:hover {
+  background: rgba(34,197,94,0.08);
+  border-left-color: transparent;
+}
+.nav-item.active::before {
+  transform: scaleY(1);
+  background: var(--green-vivid);
+  box-shadow: 0 0 10px rgba(110,231,160,0.6), 0 0 20px rgba(52,211,153,0.4);
+}
+.nav-item.active {
+  background: rgba(34,197,94,0.12);
+  border-left-color: transparent;
+}
+.nav-item.active .nav-label { color: var(--green-hot); }
+.nav-item svg {
+  width: 18px;
+  height: 18px;
+  color: var(--green-muted);
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+.nav-item:hover svg { color: var(--green-bright); }
+.nav-item.active svg { color: var(--green-vivid); }
+.nav-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--green-hot);
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+}
+.nav-badge {
+  margin-left: auto;
+  background: var(--green-core);
+  color: var(--green-white);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* ── SELF-HEAL SECTION ── */
+.self-heal-section {
+  padding: 12px 16px;
+  border-top: 1px solid rgba(34,197,94,0.08);
+  border-bottom: 1px solid rgba(34,197,94,0.08);
+}
+.self-heal-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.self-heal-title {
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--green-muted);
+  text-transform: uppercase;
+}
+.dna-helix {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  display: inline-block;
+}
+.dna-helix .strand {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.dna-helix .strand::before,
+.dna-helix .strand::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--green-core);
+  box-shadow: 0 0 4px rgba(34,197,94,0.6);
+}
+.dna-helix .strand::before {
+  animation: dnaStrand1 2s ease-in-out infinite;
+}
+.dna-helix .strand::after {
+  animation: dnaStrand2 2s ease-in-out infinite;
+}
+.dna-helix .strand:nth-child(1)::before { top: 0; }
+.dna-helix .strand:nth-child(1)::after { top: 0; }
+.dna-helix .strand:nth-child(2)::before { top: 33%; animation-delay: -0.66s; }
+.dna-helix .strand:nth-child(2)::after { top: 33%; animation-delay: -0.66s; }
+.dna-helix .strand:nth-child(3)::before { top: 66%; animation-delay: -1.33s; }
+.dna-helix .strand:nth-child(3)::after { top: 66%; animation-delay: -1.33s; }
+@keyframes dnaStrand1 {
+  0%, 100% { left: 0; opacity: 1; }
+  50% { left: 14px; opacity: 0.5; }
+}
+@keyframes dnaStrand2 {
+  0%, 100% { left: 14px; opacity: 0.5; }
+  50% { left: 0; opacity: 1; }
+}
+
+.self-heal-btn {
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid rgba(34,197,94,0.2);
+  border-radius: var(--radius-sm);
+  color: var(--green-bright);
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.self-heal-btn:hover {
+  background: rgba(34,197,94,0.1);
+  border-color: var(--green-core);
+  box-shadow: var(--glow-subtle);
+}
+.self-heal-btn.updating {
+  border-color: var(--green-core);
+  animation: healPulse 1.5s ease-in-out infinite;
+}
+@keyframes healPulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(34,197,94,0.2); }
+  50% { box-shadow: 0 0 20px rgba(34,197,94,0.5), 0 0 40px rgba(34,197,94,0.2); }
+}
+.self-heal-status {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--green-dim);
+  margin-top: 6px;
+  text-align: center;
+  min-height: 14px;
+}
+
+/* ── MODULE CARDS ── */
+.module-cards {
+  padding: 0 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.module-card {
+  background: var(--bg-raised);
+  border: 1px solid rgba(34,197,94,0.08);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+.module-card:hover {
+  border-color: var(--green-muted);
+  box-shadow: var(--glow-subtle);
+}
+.module-status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+.module-status-dot.healthy {
+  background: var(--green-core);
+  box-shadow: 0 0 6px rgba(34,197,94,0.4);
+}
+.module-status-dot.error {
+  background: var(--red-core);
+  box-shadow: 0 0 6px rgba(239,68,68,0.4);
+}
+.module-status-dot.updating {
+  background: var(--amber-core);
+  box-shadow: 0 0 6px rgba(245,158,11,0.4);
+  animation: pulseDot 1.5s ease-in-out infinite;
+}
+.module-status-dot.regenerating {
+  background: var(--green-core);
+  animation: regenPulse 0.8s ease-in-out infinite;
+}
+@keyframes regenPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.6); }
+}
+.module-info {
+  flex: 1;
+  min-width: 0;
+}
+.module-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green-hot);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.module-version {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--green-dim);
+}
+.module-regen-label {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: var(--green-core);
+  animation: regenText 1s ease-in-out infinite;
+}
+@keyframes regenText {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Sidebar footer — stats */
+.sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid rgba(34,197,94,0.08);
+}
+.sidebar-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.sidebar-stat {
+  text-align: center;
+}
+.sidebar-stat-value {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--green-vivid);
+}
+.sidebar-stat-label {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: var(--green-dim);
+  text-transform: uppercase;
+}
+
+/* ── MAIN CONTENT ── */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* ── SEARCH BAR ── */
+.search-bar-container {
+  padding: 12px 20px;
+  background: rgba(6,15,6,0.8);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(34,197,94,0.08);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.search-input-wrap {
+  flex: 1;
+  position: relative;
+}
+.search-input-wrap svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--green-muted);
+  pointer-events: none;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg-raised);
+  border: 1px solid rgba(34,197,94,0.12);
+  border-radius: var(--radius-md);
+  padding: 9px 14px 9px 38px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--green-white);
+  outline: none;
+  transition: all 0.2s;
+}
+.search-input::placeholder { color: var(--green-muted); }
+.search-input:focus {
+  border-color: var(--green-core);
+  box-shadow: var(--glow-subtle), inset 0 0 20px rgba(34,197,94,0.03);
+}
+.search-select {
+  background: var(--bg-raised);
+  border: 1px solid rgba(34,197,94,0.12);
+  border-radius: var(--radius-sm);
+  padding: 9px 10px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--green-hot);
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-appearance: none;
+}
+.search-select:focus { border-color: var(--green-core); }
+.search-select option { background: var(--bg-raised); color: var(--green-white); }
+
+/* ── SEARCH TYPING INDICATOR ── */
+.search-typing-indicator {
+  position: absolute;
+  right: 12px; top: 50%;
+  transform: translateY(-50%);
+  display: flex; gap: 3px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.search-typing-indicator.visible { opacity: 1; }
+.search-typing-indicator .dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--green-core);
+  animation: typingBounce 1.2s ease-in-out infinite;
+}
+.search-typing-indicator .dot:nth-child(2) { animation-delay: 0.15s; }
+.search-typing-indicator .dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* ── SEARCH INPUT FOCUS ANIMATION ── */
+.search-input-wrap.focused svg {
+  color: var(--green-bright);
+  animation: searchPulse 0.6s ease;
+}
+@keyframes searchPulse {
+  0% { transform: translateY(-50%) scale(1); }
+  30% { transform: translateY(-50%) scale(1.2) rotate(-15deg); }
+  60% { transform: translateY(-50%) scale(0.95); }
+  100% { transform: translateY(-50%) scale(1); }
+}
+
+/* ── DYNAMIC CONTENT AREA ── */
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0;
+}
+
+/* ── VIEW CONTAINERS ── */
+.view {
+  display: none;
+  padding: 24px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.view.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+.view.view-entering {
+  display: block;
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* ── WELCOME / HOME VIEW ── */
+.welcome-hero {
+  text-align: center;
+  padding: 60px 20px 40px;
+}
+.welcome-logo {
+  font-family: var(--font-display);
+  font-size: 64px;
+  font-weight: 900;
+  letter-spacing: 12px;
+  background: linear-gradient(135deg, var(--green-bright), var(--green-vivid), var(--green-hot));
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+  animation: glowPulse 3s ease-in-out infinite, logoGradientShift 6s ease-in-out infinite;
+  position: relative;
+}
+.welcome-logo::after {
+  content: 'HYDRA';
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  font-family: var(--font-display);
+  font-size: 64px;
+  font-weight: 900;
+  letter-spacing: 12px;
+  background: inherit;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: blur(12px);
+  opacity: 0.4;
+  z-index: -1;
+  pointer-events: none;
+}
+@keyframes glowPulse {
+  0%, 100% { filter: drop-shadow(0 0 20px rgba(52,211,153,0.3)); }
+  50% { filter: drop-shadow(0 0 50px rgba(110,231,160,0.6)); }
+}
+@keyframes logoGradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.welcome-tagline {
+  font-family: var(--font-body);
+  font-size: 18px;
+  color: var(--green-muted);
+  letter-spacing: 2px;
+  font-weight: 300;
+  animation: fadeSlideUp 0.6s ease 0.1s backwards;
+}
+.welcome-subtitle {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--green-dim);
+  letter-spacing: 4px;
+  margin-top: 4px;
+  text-transform: uppercase;
+  animation: fadeSlideUp 0.6s ease 0.15s backwards;
+}
+@keyframes fadeSlideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.welcome-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  padding: 20px 40px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.welcome-card {
+  background: rgba(10,25,10,0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(34,197,94,0.1);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  animation: welcomeCardIn 0.5s ease backwards;
+}
+.welcome-card:nth-child(1) { animation-delay: 0.2s; }
+.welcome-card:nth-child(2) { animation-delay: 0.35s; }
+.welcome-card:nth-child(3) { animation-delay: 0.5s; }
+@keyframes welcomeCardIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.welcome-card:hover {
+  border-color: var(--green-muted);
+  box-shadow: var(--glow-medium);
+  transform: translateY(-2px);
+}
+.welcome-card svg {
+  width: 32px; height: 32px;
+  color: var(--green-bright);
+  margin-bottom: 12px;
+}
+.welcome-card h3 {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--green-hot);
+  margin-bottom: 6px;
+}
+.welcome-card p {
+  font-size: 12px;
+  color: var(--green-muted);
+  line-height: 1.4;
+}
+
+/* ── SEARCH RESULTS ── */
+.results-header {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--green-muted);
+  padding: 16px 24px 8px;
+  text-transform: uppercase;
+}
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+  padding: 8px 24px 24px;
+}
+
+/* ── CARDS (media items) ── */
+.card {
+  background: rgba(10,25,10,0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(34,197,94,0.08);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+}
+.card:hover {
+  border-color: var(--green-muted);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 0 25px rgba(34,197,94,0.3), 0 0 50px rgba(34,197,94,0.15);
+  transform: translateY(-3px) scale(1.02);
+}
+.card::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: var(--radius-md);
+  opacity: 0;
+  transition: opacity 0.4s;
+  background: radial-gradient(ellipse at center, rgba(34,197,94,0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+.card:hover::after { opacity: 1; }
+.card-art {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: var(--bg-elevated);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card-art-placeholder {
+  color: var(--green-dim);
+}
+.card-art-placeholder svg { width: 40px; height: 40px; }
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.card:hover .card-overlay { opacity: 1; }
+.card-add-btn {
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--green-core);
+  border: none;
+  color: #000;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: var(--glow-intense);
+  transition: all 0.2s;
+}
+.card-add-btn:hover { background: var(--green-bright); transform: scale(1.05); }
+.card-add-btn svg { width: 14px; height: 14px; }
+.card-type-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-family: var(--font-display);
+  font-size: 8px;
+  letter-spacing: 2px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: rgba(0,0,0,0.7);
+  color: var(--green-bright);
+  border: 1px solid rgba(34,197,94,0.2);
+  backdrop-filter: blur(8px);
+  z-index: 2;
+  text-transform: uppercase;
+}
+.card-service-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 1px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(0,0,0,0.7);
+  color: var(--green-muted);
+  border: 1px solid rgba(34,197,94,0.1);
+  backdrop-filter: blur(8px);
+  z-index: 2;
+  text-transform: uppercase;
+}
+.card-info {
+  padding: 10px 12px;
+}
+.card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card-sub {
+  font-size: 11px;
+  color: var(--green-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+/* Card entrance stagger */
+@keyframes cardFadeIn { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.results-grid .card { animation: cardFadeIn 0.35s ease backwards; }
+.results-grid .card:nth-child(1) { animation-delay: 0.03s; }
+.results-grid .card:nth-child(2) { animation-delay: 0.06s; }
+.results-grid .card:nth-child(3) { animation-delay: 0.09s; }
+.results-grid .card:nth-child(4) { animation-delay: 0.12s; }
+.results-grid .card:nth-child(5) { animation-delay: 0.15s; }
+.results-grid .card:nth-child(6) { animation-delay: 0.18s; }
+.results-grid .card:nth-child(7) { animation-delay: 0.21s; }
+.results-grid .card:nth-child(8) { animation-delay: 0.24s; }
+.results-grid .card:nth-child(n+9) { animation-delay: 0.27s; }
+
+/* ── QUEUE VIEW ── */
+.queue-section-label {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--green-muted);
+  padding: 20px 24px 8px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.queue-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--green-dim);
+}
+.queue-empty svg { width: 48px; height: 48px; margin-bottom: 12px; }
+.queue-empty p { font-size: 14px; }
+
+/* ── QUEUE ITEMS ── */
+.queue-list {
+  padding: 0 24px;
+}
+.queue-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s;
+  border-bottom: 1px solid rgba(34,197,94,0.04);
+}
+.queue-item:hover { background: rgba(34,197,94,0.06); }
+
+/* Queue status indicators */
+.queue-status-indicator {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.queue-status-indicator svg { width: 14px; height: 14px; }
+.pulse-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--green-core);
+  animation: pulseDot 1.5s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(34,197,94,0.5);
+}
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 6px rgba(34,197,94,0.4); }
+  50% { transform: scale(1.3); opacity: 0.7; box-shadow: 0 0 14px rgba(34,197,94,0.7); }
+}
+.queued-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green-muted);
+}
+.check-anim svg { color: var(--green-core); animation: checkPop 0.4s ease-out; }
+@keyframes checkPop { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.3); } 100% { transform: scale(1); opacity: 1; } }
+.queue-status-indicator.error svg { color: var(--red-core); }
+
+.queue-item-info {
+  flex: 1;
+  min-width: 0;
+}
+.queue-item-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--green-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.queue-item-meta {
+  font-size: 11px;
+  color: var(--green-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.queue-item-progress-detail {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--green-bright);
+  margin-top: 2px;
+  opacity: 0.8;
+}
+
+/* Progress bar */
+.progress-bar-wrap {
+  width: 140px;
+  height: 6px;
+  background: var(--bg-elevated);
+  border-radius: 3px;
+  overflow: visible;
+  flex-shrink: 0;
+  position: relative;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green-core), var(--green-bright), var(--green-core));
+  background-size: 200% 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 12px rgba(34,197,94,0.5), 0 0 4px rgba(52,211,153,0.8);
+  animation: progressShimmer 1.5s linear infinite;
+  position: relative;
+}
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 20px; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: progressScanline 1s ease-in-out infinite;
+}
+@keyframes progressShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes progressScanline {
+  0%, 100% { opacity: 0.3; transform: translateX(-10px); }
+  50% { opacity: 1; transform: translateX(0); }
+}
+.progress-pct {
+  position: absolute;
+  right: -32px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--green-bright);
+  white-space: nowrap;
+}
+
+/* Status badges */
+.status-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.status-badge.queued { background: rgba(34,197,94,0.1); color: var(--green-muted); }
+.status-badge.downloading { background: rgba(34,197,94,0.15); color: var(--green-core); }
+.status-badge.completed { background: rgba(34,197,94,0.2); color: var(--green-bright); }
+.status-badge.error { background: rgba(239,68,68,0.15); color: var(--red-core); }
+
+/* ── BUTTONS ── */
+.btn {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s;
+}
+.btn svg { width: 16px; height: 16px; }
+.btn-primary {
+  background: var(--green-core);
+  color: #000;
+  border-color: var(--green-core);
+}
+.btn-primary:hover {
+  background: var(--green-bright);
+  box-shadow: var(--glow-intense);
+  transform: translateY(-1px);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--green-hot);
+  border-color: rgba(34,197,94,0.2);
+}
+.btn-ghost:hover {
+  background: rgba(34,197,94,0.1);
+  border-color: var(--green-muted);
+}
+.btn-sm {
+  font-size: 11px;
+  padding: 6px 14px;
+}
+.btn:active { transform: scale(0.96) !important; transition: transform 0.08s; }
+.btn-primary:active { box-shadow: 0 0 20px rgba(34,197,94,0.5) !important; }
+
+/* ── SETTINGS VIEW ── */
+.settings-group {
+  background: rgba(10,25,10,0.65);
+  backdrop-filter: blur(16px) saturate(1.15);
+  border: 1px solid rgba(34,197,94,0.08);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), inset 0 -1px 0 rgba(0,0,0,0.3);
+}
+.settings-group-title {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--green-bright);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(34,197,94,0.04);
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-label {
+  font-size: 13px;
+  color: var(--green-hot);
+}
+.setting-desc {
+  font-size: 11px;
+  color: var(--green-dim);
+  margin-top: 2px;
+}
+.setting-input {
+  background: var(--bg-elevated);
+  border: 1px solid rgba(34,197,94,0.12);
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--green-white);
+  outline: none;
+  transition: all 0.2s;
+  width: 240px;
+}
+.setting-input:focus {
+  border-color: var(--green-core);
+  box-shadow: var(--glow-subtle);
+}
+.setting-select {
+  background: var(--bg-elevated);
+  border: 1px solid rgba(34,197,94,0.12);
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--green-white);
+  outline: none;
+  cursor: pointer;
+}
+.setting-select option { background: var(--bg-raised); }
+
+/* Toggle switch */
+.toggle {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  cursor: pointer;
+}
+.toggle input { display: none; }
+.toggle-track {
+  width: 100%;
+  height: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid rgba(34,197,94,0.15);
+  border-radius: 11px;
+  transition: all 0.25s;
+}
+.toggle input:checked + .toggle-track {
+  background: var(--green-core);
+  border-color: var(--green-bright);
+  box-shadow: var(--glow-subtle);
+}
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  background: var(--green-muted);
+  border-radius: 50%;
+  transition: all 0.25s;
+}
+.toggle input:checked ~ .toggle-thumb {
+  left: 21px;
+  background: var(--green-white);
+}
+
+/* Slider */
+.range-slider {
+  -webkit-appearance: none;
+  width: 120px;
+  height: 4px;
+  background: var(--bg-elevated);
+  border-radius: 2px;
+  outline: none;
+}
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--green-core);
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(34,197,94,0.4);
+  transition: all 0.2s;
+}
+.range-slider::-webkit-slider-thumb:hover {
+  background: var(--green-bright);
+  box-shadow: 0 0 12px rgba(34,197,94,0.6);
+}
+
+/* Dep status badges */
+.dep-status-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.dep-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.dep-badge.ok { background: rgba(34,197,94,0.15); color: var(--green-core); }
+.dep-badge.missing { background: rgba(239,68,68,0.15); color: var(--red-core); }
+.dep-badge svg { width: 10px; height: 10px; }
+
+/* ── EMPTY STATES ── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+}
+.empty-state svg {
+  width: 56px; height: 56px;
+  color: var(--green-dim);
+  margin-bottom: 16px;
+}
+.empty-state h3 {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 3px;
+  color: var(--green-muted);
+  margin-bottom: 8px;
+}
+.empty-state p {
+  font-size: 13px;
+  color: var(--green-dim);
+  max-width: 300px;
+}
+
+/* ── LOADING SKELETON ── */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-raised) 25%, var(--bg-elevated) 50%, var(--bg-raised) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ── TOAST NOTIFICATIONS ── */
+.toast-container {
+  position: fixed;
+  bottom: 44px;
+  right: 16px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+}
+.toast {
+  background: rgba(10,25,10,0.85);
+  backdrop-filter: blur(24px) saturate(1.3);
+  border: 1px solid rgba(34,197,94,0.15);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  min-width: 280px;
+  max-width: 400px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), var(--glow-medium);
+  animation: toastIn 0.35s cubic-bezier(0.16,1,0.3,1);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.toast.toast-out { opacity: 0; transform: translateX(120%); }
+@keyframes toastIn { from { opacity: 0; transform: translateX(120%) scale(0.8); } to { opacity: 1; transform: translateX(0) scale(1); } }
+.toast-icon { flex-shrink: 0; }
+.toast-icon svg { width: 18px; height: 18px; }
+.toast-icon.success svg { color: var(--green-core); animation: toastCheckBounce 0.5s ease; }
+.toast-icon.error svg { color: var(--red-core); animation: toastShake 0.4s ease; }
+.toast-icon.info svg { color: var(--green-bright); animation: toastSpin 0.6s ease; }
+@keyframes toastCheckBounce { 0% { transform: scale(0); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
+@keyframes toastShake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-3px); } 40%, 80% { transform: translateX(3px); } }
+@keyframes toastSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.toast-text {
+  flex: 1;
+  font-size: 12px;
+  color: var(--green-hot);
+  line-height: 1.3;
+}
+.toast-progress {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 2px;
+  background: var(--green-core);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  animation: toastTimer 4s linear forwards;
+}
+@keyframes toastTimer { from { width: 100%; } to { width: 0%; } }
+
+/* ── STATUS BAR ── */
+.status-bar {
+  height: 28px;
+  background: rgba(6,15,6,0.9);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(34,197,94,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--green-dim);
+  z-index: 1000;
+  position: relative;
+}
+.status-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.status-bar-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--green-muted);
+}
+.status-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.status-dot-sm {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.status-dot-sm.green { background: var(--green-core); box-shadow: 0 0 4px rgba(34,197,94,0.4); }
+.status-dot-sm.red { background: var(--red-core); box-shadow: 0 0 4px rgba(239,68,68,0.4); }
+.status-dot-sm.yellow { background: var(--amber-core); box-shadow: 0 0 4px rgba(245,158,11,0.4); }
+.status-dot-sm.pulse { animation: pulseDot 1.5s ease-in-out infinite; }
+
+/* ── MICRO-INTERACTIONS ── */
+.nav-item:hover svg { animation: iconBounce 0.4s ease; }
+@keyframes iconBounce { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.25); } 70% { transform: scale(0.95); } }
+.nav-item.active svg { filter: drop-shadow(0 0 4px rgba(110,231,160,0.5)); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 800px) {
+  .sidebar { width: 56px; min-width: 56px; }
+  .nav-label, .nav-section-label, .sidebar-header,
+  .sidebar-footer, .nav-badge, .self-heal-section,
+  .module-cards { display: none; }
+  .nav-item { justify-content: center; padding: 12px; }
+  .nav-item svg { width: 20px; height: 20px; }
+}
+
+/* ── MATRIX RAIN CANVAS ── */
+#matrixRain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ MATRIX RAIN CANVAS ═══════════ -->
+<canvas id="matrixRain"></canvas>
+
+<!-- ═══════════ TITLEBAR ═══════════ -->
+<div class="titlebar">
+  <div class="titlebar-brand">
+    <span class="titlebar-logo">HYDRA</span>
+    <span class="titlebar-version">v0.1.0</span>
+  </div>
+  <div class="titlebar-controls">
+    <button class="titlebar-btn" onclick="window.hydra.minimize()" title="Minimize">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+    <button class="titlebar-btn" onclick="window.hydra.maximize()" title="Maximize">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="5" width="14" height="14" rx="1"/></svg>
+    </button>
+    <button class="titlebar-btn close-btn" onclick="window.hydra.close()" title="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════ APP LAYOUT ═══════════ -->
+<div class="app-layout">
+
+  <!-- ── SIDEBAR ── -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">
+        <span class="serpent-icon">&#x1F40D;</span>
+        HYDRA
+      </div>
+      <div class="sidebar-subtitle">Harvesting Your DRM Resource Archives</div>
+    </div>
+
+    <!-- SERVICE MODULES -->
+    <div class="nav-section-label">Service Modules</div>
+    <div class="module-cards" id="moduleCards">
+      <div class="module-card">
+        <div class="module-status-dot healthy"></div>
+        <div class="module-info">
+          <div class="module-name">Loading...</div>
+          <div class="module-version">--</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SELF-HEAL -->
+    <div class="self-heal-section">
+      <div class="self-heal-header">
+        <div class="dna-helix">
+          <div class="strand"></div>
+          <div class="strand"></div>
+          <div class="strand"></div>
+        </div>
+        <span class="self-heal-title">Self-Heal</span>
+      </div>
+      <button class="self-heal-btn" id="selfHealBtn" onclick="triggerSelfHeal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        REGENERATE
+      </button>
+      <div class="self-heal-status" id="selfHealStatus"></div>
+    </div>
+
+    <!-- NAV LINKS -->
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Navigate</div>
+
+      <div class="nav-item active" data-view="home" onclick="switchView('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="nav-label">Home</span>
+      </div>
+
+      <div class="nav-item" data-view="search" onclick="switchView('search')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span class="nav-label">Search</span>
+      </div>
+
+      <div class="nav-item" data-view="queue" onclick="switchView('queue')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span class="nav-label">Queue</span>
+        <span class="nav-badge" id="queueBadge" style="display:none">0</span>
+      </div>
+
+      <div class="nav-item" data-view="settings" onclick="switchView('settings')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span class="nav-label">Settings</span>
+      </div>
+    </div>
+
+    <!-- SIDEBAR FOOTER STATS -->
+    <div class="sidebar-footer">
+      <div class="sidebar-stats">
+        <div class="sidebar-stat">
+          <div class="sidebar-stat-value" id="statModules">0</div>
+          <div class="sidebar-stat-label">Modules</div>
+        </div>
+        <div class="sidebar-stat">
+          <div class="sidebar-stat-value" id="statQueue">0</div>
+          <div class="sidebar-stat-label">Queue</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAIN CONTENT ── -->
+  <div class="main-content">
+    <!-- Search Bar (visible on search view) -->
+    <div class="search-bar-container" id="searchBarContainer">
+      <div class="search-input-wrap" id="searchInputWrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="Paste a URL or search..." onkeydown="handleSearchKey(event)" oninput="onSearchInput()" onfocus="document.getElementById('searchInputWrap').classList.add('focused')" onblur="document.getElementById('searchInputWrap').classList.remove('focused')">
+        <div class="search-typing-indicator" id="searchTypingIndicator"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+      <select class="search-select" id="serviceSelect" title="Service">
+        <option value="all">All Services</option>
+      </select>
+      <select class="search-select" id="qualitySelect" title="Quality">
+        <option value="best">Best</option>
+        <option value="1080p">1080p</option>
+        <option value="720p">720p</option>
+        <option value="480p">480p</option>
+      </select>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content-area" id="contentArea">
+
+      <!-- HOME VIEW -->
+      <div class="view active" id="viewHome">
+        <div class="welcome-hero">
+          <div class="welcome-logo">HYDRA</div>
+          <div class="welcome-tagline">Cut One Head, Two More Shall Take Its Place</div>
+          <div class="welcome-subtitle">Harvesting Your DRM Resource Archives</div>
+        </div>
+        <div class="welcome-cards">
+          <div class="welcome-card" onclick="switchView('search')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <h3>SEARCH</h3>
+            <p>Paste a URL or search for content across streaming services.</p>
+          </div>
+          <div class="welcome-card" onclick="switchView('queue')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <h3>QUEUE</h3>
+            <p>Manage downloads. Track progress across concurrent rips.</p>
+          </div>
+          <div class="welcome-card" onclick="switchView('settings')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9"/></svg>
+            <h3>SETTINGS</h3>
+            <p>Configure downloads, dependencies, and module updates.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEARCH VIEW -->
+      <div class="view" id="viewSearch">
+        <div id="searchResults">
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <h3>SEARCH SERVICES</h3>
+            <p>Paste a streaming URL or search by title to find content across all loaded modules.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUEUE VIEW -->
+      <div class="view" id="viewQueue">
+        <div id="queueActive">
+          <div class="queue-empty" id="queueEmptyState">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--green-dim)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <p>Queue is empty. Search for content to start downloading.</p>
+          </div>
+        </div>
+        <div id="queueHistory"></div>
+      </div>
+
+      <!-- SETTINGS VIEW -->
+      <div class="view" id="viewSettings">
+        <div style="max-width:640px;">
+          <div class="settings-group">
+            <div class="settings-group-title">Download</div>
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Download Directory</div>
+                <div class="setting-desc">Where downloaded media is saved</div>
+              </div>
+              <input type="text" class="setting-input" id="settingDownloadDir" value="" placeholder="~/Videos/HYDRA" onchange="saveSetting('downloadDir', this.value)">
+            </div>
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Default Quality</div>
+                <div class="setting-desc">Preferred download quality</div>
+              </div>
+              <select class="setting-select" id="settingQuality" onchange="saveSetting('quality', this.value)">
+                <option value="best" selected>Best Available</option>
+                <option value="1080p">1080p</option>
+                <option value="720p">720p</option>
+                <option value="480p">480p</option>
+              </select>
+            </div>
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Concurrent Downloads</div>
+                <div class="setting-desc">Max simultaneous downloads (1-5)</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <input type="range" class="range-slider" id="settingConcurrent" min="1" max="5" value="2" oninput="document.getElementById('concurrentVal').textContent=this.value;saveSetting('concurrent',parseInt(this.value))">
+                <span id="concurrentVal" style="font-family:var(--font-mono);font-size:13px;color:var(--green-vivid);min-width:12px">2</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-group">
+            <div class="settings-group-title">Modules</div>
+            <div class="setting-row">
+              <div>
+                <div class="setting-label">Auto-Update Modules</div>
+                <div class="setting-desc">Automatically check for module updates on launch</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="settingAutoUpdate" checked onchange="saveSetting('autoUpdate', this.checked)">
+                <div class="toggle-track"></div>
+                <div class="toggle-thumb"></div>
+              </label>
+            </div>
+            <div style="padding-top:12px;">
+              <button class="btn btn-ghost btn-sm" onclick="triggerSelfHeal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                Check for Updates
+              </button>
+            </div>
+          </div>
+
+          <div class="settings-group">
+            <div class="settings-group-title">Dependencies</div>
+            <div id="depStatusContainer">
+              <div class="setting-row">
+                <div class="setting-label">Checking dependencies...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content-area -->
+  </div><!-- /main-content -->
+</div><!-- /app-layout -->
+
+<!-- ═══════════ STATUS BAR ═══════════ -->
+<div class="status-bar">
+  <div class="status-bar-left">
+    <span class="status-dot-sm" id="bridgeStatusDot"></span>
+    <span id="bridgeStatusText">Connecting...</span>
+  </div>
+  <div class="status-bar-center" id="statusActivity">Ready</div>
+  <div class="status-bar-right" id="moduleHealthDots"></div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+/*
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  HYDRA — Renderer Process                                       ║
+  ║  Harvesting Your DRM Resource Archives                          ║
+  ║  Search, queue, download, self-heal, settings                   ║
+  ╚══════════════════════════════════════════════════════════════════╝
+*/
+
+// ============ STATE ============
+let currentView = 'home';
+let settings = {};
+let searchResults = [];
+let downloadQueue = [];
+let downloadHistory = [];
+let modules = [];
+let bridgeConnected = false;
+let navigationStack = [];
+
+// SVG icon helpers
+const ICONS = {
+  download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+  alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+  info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+  film: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/></svg>',
+  folder: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>',
+  refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>',
+  trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+};
+
+// ============ VIEW SWITCHING ============
+function switchView(view) {
+  if (view !== currentView) {
+    navigationStack.push(currentView);
+  }
+  currentView = view;
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.toggle('active', item.dataset.view === view);
+  });
+
+  document.querySelectorAll('.view').forEach(v => {
+    v.classList.remove('active');
+    v.classList.remove('view-entering');
+  });
+  const viewEl = document.getElementById('view' + view.charAt(0).toUpperCase() + view.slice(1));
+  if (viewEl) {
+    viewEl.classList.add('view-entering');
+    void viewEl.offsetWidth;
+    requestAnimationFrame(() => {
+      viewEl.classList.remove('view-entering');
+      viewEl.classList.add('active');
+    });
+  }
+
+  if (view === 'search') {
+    setTimeout(() => document.getElementById('searchInput')?.focus(), 100);
+  }
+}
+
+function goBack() {
+  if (navigationStack.length > 0) {
+    const prev = navigationStack.pop();
+    currentView = prev;
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.classList.toggle('active', item.dataset.view === prev);
+    });
+    document.querySelectorAll('.view').forEach(v => { v.classList.remove('active'); v.classList.remove('view-entering'); });
+    const viewEl = document.getElementById('view' + prev.charAt(0).toUpperCase() + prev.slice(1));
+    if (viewEl) {
+      viewEl.classList.add('view-entering');
+      void viewEl.offsetWidth;
+      requestAnimationFrame(() => { viewEl.classList.remove('view-entering'); viewEl.classList.add('active'); });
+    }
+  } else {
+    switchView('home');
+  }
+}
+
+// ============ SEARCH ============
+let lastSearchId = 0;
+let searchTypingTimer = null;
+
+function handleSearchKey(e) {
+  if (e.key === 'Enter') {
+    const val = document.getElementById('searchInput').value.trim();
+    if (!val) return;
+    // Detect URL vs search query
+    if (val.match(/^https?:\/\//i)) {
+      handleUrlPaste(val);
+    } else {
+      doSearch();
+    }
+  }
+}
+
+async function handleUrlPaste(url) {
+  switchView('search');
+  const container = document.getElementById('searchResults');
+  container.innerHTML = renderSkeletonGrid(1);
+  setActivityStatus('Fetching metadata...');
+
+  try {
+    const result = await window.hydra.getMetadata(url);
+    if (result.status === 'error') {
+      container.innerHTML = `<div class="empty-state"><div>${ICONS.alert}</div><h3>METADATA FAILED</h3><p>${escHtml(result.error)}</p></div>`;
+      setActivityStatus('Ready');
+      return;
+    }
+    const meta = result.data || {};
+    container.innerHTML = renderMediaCards([meta]);
+    setActivityStatus('Ready');
+  } catch (e) {
+    container.innerHTML = `<div class="empty-state"><div>${ICONS.alert}</div><h3>BRIDGE ERROR</h3><p>${escHtml(e.message)}</p><p style="margin-top:8px;font-size:11px;color:var(--green-dim);">Make sure the Python bridge is running.</p></div>`;
+    setActivityStatus('Ready');
+  }
+}
+
+async function doSearch() {
+  const query = document.getElementById('searchInput').value.trim();
+  if (!query) return;
+
+  const service = document.getElementById('serviceSelect').value;
+  const searchId = ++lastSearchId;
+  switchView('search');
+
+  const container = document.getElementById('searchResults');
+  container.innerHTML = renderSkeletonGrid(6);
+  setActivityStatus('Searching...');
+
+  try {
+    const result = await window.hydra.search(query, service, 'all', 50);
+    if (searchId !== lastSearchId) return;
+    if (result.status === 'error') {
+      container.innerHTML = `<div class="empty-state"><div>${ICONS.alert}</div><h3>SEARCH FAILED</h3><p>${escHtml(result.error)}</p></div>`;
+      setActivityStatus('Ready');
+      return;
+    }
+    const items = result.data?.results || [];
+    if (items.length === 0) {
+      container.innerHTML = `<div class="empty-state"><div>${ICONS.info}</div><h3>NO RESULTS</h3><p>No results found for "${escHtml(query)}"</p></div>`;
+      setActivityStatus('Ready');
+      return;
+    }
+    searchResults = items;
+    container.innerHTML = `<div class="results-header">${items.length} RESULTS FOUND</div>` + renderMediaCards(items);
+    setActivityStatus('Ready');
+  } catch (e) {
+    container.innerHTML = `<div class="empty-state"><div>${ICONS.alert}</div><h3>BRIDGE ERROR</h3><p>${escHtml(e.message)}</p></div>`;
+    setActivityStatus('Ready');
+  }
+}
+
+function onSearchInput() {
+  const indicator = document.getElementById('searchTypingIndicator');
+  const val = document.getElementById('searchInput').value;
+  if (val.length > 0) {
+    indicator.classList.add('visible');
+    clearTimeout(searchTypingTimer);
+    searchTypingTimer = setTimeout(() => indicator.classList.remove('visible'), 800);
+  } else {
+    indicator.classList.remove('visible');
+  }
+}
+
+// Detect paste
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('searchInput');
+  if (input) {
+    input.addEventListener('paste', (e) => {
+      setTimeout(() => {
+        const val = input.value.trim();
+        if (val.match(/^https?:\/\//i)) {
+          handleUrlPaste(val);
+        }
+      }, 50);
+    });
+  }
+});
+
+// ============ RENDER MEDIA CARDS ============
+function renderMediaCards(items) {
+  let html = '<div class="results-grid">';
+  for (const item of items) {
+    const type = (item.type || 'video').toUpperCase();
+    const typeBadge = `<div class="card-type-badge">${escHtml(type)}</div>`;
+    const serviceBadge = item.service ? `<div class="card-service-badge">${escHtml(item.service)}</div>` : '';
+    const year = item.year ? `<span style="color:var(--green-dim)"> (${item.year})</span>` : '';
+
+    html += `<div class="card">
+      <div class="card-art">
+        <div class="card-art-placeholder">${ICONS.film}</div>
+        ${typeBadge}${serviceBadge}
+        <div class="card-overlay">
+          <button class="card-add-btn" onclick="event.stopPropagation();addToQueue('${escAttr(item.url || '')}','${escAttr(item.title || 'Unknown')}','${escAttr(item.service || '')}','${escAttr(item.type || 'video')}')">
+            ${ICONS.plus} ADD TO QUEUE
+          </button>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-title">${escHtml(item.title || 'Unknown')}${year}</div>
+        <div class="card-sub">${escHtml(item.service || '')} ${item.quality ? '· ' + escHtml(item.quality) : ''}</div>
+      </div>
+    </div>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+// ============ QUEUE MANAGEMENT ============
+async function addToQueue(url, title, service, type) {
+  const quality = document.getElementById('qualitySelect')?.value || settings.quality || 'best';
+  try {
+    await window.hydra.queueAdd({
+      url,
+      title: title || 'Unknown',
+      service: service || '',
+      type: type || 'video',
+      quality
+    });
+    showToast('success', `Queued: ${title}`);
+    updateQueueBadge();
+  } catch (e) {
+    showToast('error', `Failed to queue: ${e.message}`);
+  }
+}
+
+async function removeFromQueue(itemId) {
+  try {
+    await window.hydra.queueRemove(itemId);
+  } catch (e) {
+    showToast('error', 'Failed to remove: ' + e.message);
+  }
+}
+
+async function clearHistory() {
+  try {
+    await window.hydra.queueClearCompleted();
+    downloadHistory = [];
+    renderHistorySection();
+    showToast('info', 'History cleared');
+  } catch (e) {
+    showToast('error', e.message);
+  }
+}
+
+function renderQueue(data) {
+  downloadQueue = data.queue || [];
+  downloadHistory = data.history || [];
+  updateQueueBadge();
+  document.getElementById('statQueue').textContent = downloadQueue.length;
+  if (currentView === 'queue') {
+    renderQueueView();
+    renderHistorySection();
+  }
+}
+
+function updateQueueBadge() {
+  const badge = document.getElementById('queueBadge');
+  if (downloadQueue.length > 0) {
+    badge.textContent = downloadQueue.length;
+    badge.style.display = '';
+  } else {
+    badge.style.display = 'none';
+  }
+  document.getElementById('statQueue').textContent = downloadQueue.length;
+}
+
+function renderQueueView() {
+  const container = document.getElementById('queueActive');
+  const emptyEl = document.getElementById('queueEmptyState');
+
+  if (downloadQueue.length === 0) {
+    container.innerHTML = `<div class="queue-empty" id="queueEmptyState">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--green-dim);width:48px;height:48px;margin-bottom:12px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <p>Queue is empty. Search for content to start downloading.</p>
+    </div>`;
+    return;
+  }
+
+  let html = `<div class="queue-section-label">ACTIVE QUEUE — ${downloadQueue.length} ITEMS</div>`;
+  html += '<div class="queue-list">';
+  for (const item of downloadQueue) {
+    const progress = item.progress || 0;
+    const statusIndicator = item.status === 'downloading'
+      ? '<div class="queue-status-indicator downloading"><div class="pulse-dot"></div></div>'
+      : item.status === 'completed'
+        ? '<div class="queue-status-indicator completed"><div class="check-anim">' + ICONS.check + '</div></div>'
+        : item.status === 'error'
+          ? '<div class="queue-status-indicator error">' + ICONS.alert + '</div>'
+          : '<div class="queue-status-indicator queued"><div class="queued-dot"></div></div>';
+
+    let progressDetail = '';
+    if (item.status === 'downloading') {
+      const parts = [];
+      if (item.speed) parts.push(item.speed);
+      if (item.eta) parts.push('ETA: ' + item.eta);
+      if (parts.length) progressDetail = `<div class="queue-item-progress-detail">${escHtml(parts.join(' · '))}</div>`;
+    }
+
+    html += `<div class="queue-item">
+      ${statusIndicator}
+      <div class="queue-item-info">
+        <div class="queue-item-title">${escHtml(item.title || 'Unknown')}</div>
+        <div class="queue-item-meta">${escHtml(item.service || '')} · ${escHtml(item.quality || 'best')} ${item.type ? '· ' + escHtml(item.type) : ''}</div>
+        ${progressDetail}
+      </div>
+      <span class="status-badge ${item.status || 'queued'}">${(item.status || 'QUEUED').toUpperCase()}</span>
+      ${item.status === 'downloading' ? `<div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${progress}%"></div><span class="progress-pct">${progress}%</span></div>` : ''}
+      ${item.status === 'queued' ? `<button class="btn btn-ghost btn-sm" style="padding:4px 8px" onclick="removeFromQueue('${escAttr(item.id)}')" title="Remove">${ICONS.x}</button>` : ''}
+    </div>`;
+  }
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function renderHistorySection() {
+  const container = document.getElementById('queueHistory');
+  if (downloadHistory.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  let html = `<div class="queue-section-label">
+    HISTORY — ${downloadHistory.length} ITEMS
+    <button class="btn btn-ghost btn-sm" onclick="clearHistory()">Clear History</button>
+  </div>`;
+  html += '<div class="queue-list">';
+  for (const item of downloadHistory) {
+    const time = item.completedAt ? new Date(item.completedAt).toLocaleString() : '';
+    html += `<div class="queue-item" style="opacity:0.7">
+      <div class="queue-status-indicator completed"><div class="check-anim">${ICONS.check}</div></div>
+      <div class="queue-item-info">
+        <div class="queue-item-title">${escHtml(item.title || 'Unknown')}</div>
+        <div class="queue-item-meta">${escHtml(item.service || '')} ${time ? '· ' + time : ''}</div>
+      </div>
+      <span class="status-badge ${item.status || 'completed'}">${(item.status || 'COMPLETED').toUpperCase()}</span>
+    </div>`;
+  }
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// ============ MODULES ============
+function renderModules(moduleList) {
+  modules = moduleList || [];
+  const container = document.getElementById('moduleCards');
+  const serviceSelect = document.getElementById('serviceSelect');
+  document.getElementById('statModules').textContent = modules.length;
+
+  if (modules.length === 0) {
+    container.innerHTML = `<div class="module-card">
+      <div class="module-status-dot error"></div>
+      <div class="module-info">
+        <div class="module-name">No modules loaded</div>
+        <div class="module-version">Run Self-Heal</div>
+      </div>
+    </div>`;
+    return;
+  }
+
+  let html = '';
+  let selectHtml = '<option value="all">All Services</option>';
+
+  for (const mod of modules) {
+    const statusClass = mod.status === 'healthy' ? 'healthy'
+      : mod.status === 'error' ? 'error'
+      : mod.status === 'updating' ? 'updating'
+      : mod.status === 'regenerating' ? 'regenerating'
+      : 'healthy';
+
+    const regenLabel = mod.status === 'regenerating'
+      ? '<div class="module-regen-label">REGENERATING...</div>'
+      : '';
+
+    html += `<div class="module-card">
+      <div class="module-status-dot ${statusClass}"></div>
+      <div class="module-info">
+        <div class="module-name">${escHtml(mod.name || 'Unknown')}</div>
+        <div class="module-version">${escHtml(mod.version || '--')} ${mod.lastUpdate ? '· ' + mod.lastUpdate : ''}</div>
+        ${regenLabel}
+      </div>
+    </div>`;
+
+    selectHtml += `<option value="${escAttr(mod.id || mod.name)}">${escHtml(mod.name || 'Unknown')}</option>`;
+  }
+
+  container.innerHTML = html;
+  serviceSelect.innerHTML = selectHtml;
+
+  // Update status bar health dots
+  renderModuleHealthDots();
+}
+
+function renderModuleHealthDots() {
+  const container = document.getElementById('moduleHealthDots');
+  let html = '';
+  for (const mod of modules) {
+    const color = mod.status === 'healthy' ? 'green'
+      : mod.status === 'error' ? 'red'
+      : 'yellow';
+    const pulse = mod.status === 'updating' || mod.status === 'regenerating' ? ' pulse' : '';
+    html += `<span class="status-dot-sm ${color}${pulse}" title="${escAttr(mod.name || '')}"></span>`;
+  }
+  container.innerHTML = html;
+}
+
+// ============ SELF-HEAL ============
+async function triggerSelfHeal() {
+  const btn = document.getElementById('selfHealBtn');
+  const status = document.getElementById('selfHealStatus');
+  btn.classList.add('updating');
+  status.textContent = 'Checking modules...';
+  status.style.color = 'var(--green-core)';
+  setActivityStatus('Regenerating modules...');
+
+  try {
+    const result = await window.hydra.updateModules();
+    btn.classList.remove('updating');
+    if (result.status === 'ok') {
+      const count = result.data?.updated || 0;
+      status.textContent = count > 0 ? `${count} module(s) updated` : 'All modules up to date';
+      status.style.color = 'var(--green-bright)';
+      if (count > 0) {
+        showToast('success', `HYDRA regenerated: ${count} module(s) updated`);
+      } else {
+        showToast('info', 'All modules are healthy');
+      }
+      // Refresh module list
+      loadModules();
+    } else {
+      status.textContent = result.error || 'Update failed';
+      status.style.color = 'var(--red-core)';
+      showToast('error', result.error || 'Module update failed');
+    }
+    setActivityStatus('Ready');
+  } catch (e) {
+    btn.classList.remove('updating');
+    status.textContent = 'Error: ' + e.message;
+    status.style.color = 'var(--red-core)';
+    showToast('error', 'Self-heal failed: ' + e.message);
+    setActivityStatus('Ready');
+  }
+
+  setTimeout(() => {
+    status.textContent = '';
+  }, 8000);
+}
+
+// ============ DEPENDENCIES ============
+async function checkDependencies() {
+  const container = document.getElementById('depStatusContainer');
+  try {
+    const deps = await window.hydra.checkDeps();
+    const depList = [
+      { name: 'Python', key: 'python' },
+      { name: 'Devine', key: 'devine' },
+      { name: 'FFmpeg', key: 'ffmpeg' },
+      { name: 'yt-dlp', key: 'ytdlp' },
+    ];
+
+    let html = '';
+    for (const dep of depList) {
+      const ok = deps[dep.key];
+      html += `<div class="setting-row">
+        <div class="setting-label">${dep.name}</div>
+        <div class="dep-badge ${ok ? 'ok' : 'missing'}">
+          ${ok ? ICONS.check : ICONS.x}
+          ${ok ? 'INSTALLED' : 'MISSING'}
+        </div>
+      </div>`;
+    }
+    container.innerHTML = html;
+
+    if (!deps.python) showToast('error', 'Python not found. Install Python 3.8+ and add to PATH.');
+  } catch (e) {
+    container.innerHTML = `<div class="setting-row"><div class="setting-label" style="color:var(--red-core)">Failed to check dependencies</div></div>`;
+  }
+}
+
+// ============ SETTINGS ============
+async function loadSettings() {
+  try {
+    settings = await window.hydra.getSettings() || {};
+    if (settings.downloadDir) document.getElementById('settingDownloadDir').value = settings.downloadDir;
+    if (settings.quality) document.getElementById('settingQuality').value = settings.quality;
+    if (settings.concurrent) {
+      document.getElementById('settingConcurrent').value = settings.concurrent;
+      document.getElementById('concurrentVal').textContent = settings.concurrent;
+    }
+    if (settings.autoUpdate !== undefined) document.getElementById('settingAutoUpdate').checked = settings.autoUpdate;
+  } catch (e) {
+    console.error('Failed to load settings:', e);
+  }
+}
+
+async function saveSetting(key, value) {
+  settings[key] = value;
+  try {
+    await window.hydra.setSettings(settings);
+  } catch (e) {
+    showToast('error', 'Failed to save settings');
+  }
+}
+
+// ============ MODULES LOADING ============
+async function loadModules() {
+  try {
+    const result = await window.hydra.listModules();
+    renderModules(result.data?.modules || result.modules || []);
+  } catch (e) {
+    renderModules([]);
+  }
+}
+
+// ============ BRIDGE CONNECTION ============
+function setBridgeStatus(connected) {
+  bridgeConnected = connected;
+  const dot = document.getElementById('bridgeStatusDot');
+  const text = document.getElementById('bridgeStatusText');
+  if (connected) {
+    dot.className = 'status-dot-sm green';
+    text.textContent = 'Bridge Connected';
+  } else {
+    dot.className = 'status-dot-sm red';
+    text.textContent = 'Bridge Disconnected';
+  }
+}
+
+function setActivityStatus(msg) {
+  document.getElementById('statusActivity').textContent = msg;
+}
+
+// ============ TOAST NOTIFICATIONS ============
+function showToast(type, message) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+
+  const iconSvg = type === 'success' ? ICONS.check : type === 'error' ? ICONS.alert : ICONS.info;
+  toast.innerHTML = `<div class="toast-icon ${type}">${iconSvg}</div><div class="toast-text">${escHtml(message)}</div><div class="toast-progress"></div>`;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('toast-out');
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
+
+// ============ SKELETON LOADERS ============
+function renderSkeletonGrid(count) {
+  let html = '<div class="results-grid">';
+  for (let i = 0; i < count; i++) {
+    html += `<div class="card" style="pointer-events:none">
+      <div class="card-art"><div class="skeleton" style="width:100%;height:100%"></div></div>
+      <div class="card-info">
+        <div class="skeleton" style="width:80%;height:14px;margin-bottom:6px"></div>
+        <div class="skeleton" style="width:50%;height:11px"></div>
+      </div>
+    </div>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+// ============ UTILITIES ============
+function escHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = String(str);
+  return div.innerHTML;
+}
+
+function escAttr(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\\/g, '\\\\');
+}
+
+// ============ EVENT LISTENERS ============
+function wireEvents() {
+  try {
+    if (window.hydra.onQueueUpdate) {
+      window.hydra.onQueueUpdate((data) => renderQueue(data));
+    }
+    if (window.hydra.onDownloadProgress) {
+      window.hydra.onDownloadProgress((data) => {
+        const item = downloadQueue.find(q => q.id === data.item_id);
+        if (item) {
+          item.progress = data.progress || 0;
+          item.speed = data.speed || '';
+          item.eta = data.eta || '';
+          item.status = 'downloading';
+          if (currentView === 'queue') renderQueueView();
+        }
+      });
+    }
+    if (window.hydra.onDownloadComplete) {
+      window.hydra.onDownloadComplete((item) => {
+        showToast('success', `Downloaded: ${item.title || 'Unknown'}`);
+        setActivityStatus('Ready');
+      });
+    }
+    if (window.hydra.onHydraLog) {
+      window.hydra.onHydraLog((data) => {
+        if (data.message) setActivityStatus(data.message);
+      });
+    }
+  } catch (e) {
+    console.log('Event wiring deferred — bridge not ready yet');
+  }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'f') {
+    e.preventDefault();
+    switchView('search');
+  }
+  if (e.key === 'Escape') {
+    goBack();
+  }
+});
+
+// ============ INIT ============
+async function init() {
+  // Check if bridge is available
+  if (typeof window.hydra === 'undefined') {
+    setBridgeStatus(false);
+    setActivityStatus('Waiting for bridge...');
+    // Provide mock for development
+    window.hydra = {
+      minimize: () => {},
+      maximize: () => {},
+      close: () => {},
+      listModules: async () => ({ data: { modules: [
+        { id: 'amazon', name: 'Amazon Prime', version: '2.1.0', status: 'healthy', lastUpdate: '2h ago' },
+        { id: 'netflix', name: 'Netflix', version: '3.0.1', status: 'healthy', lastUpdate: '1d ago' },
+        { id: 'disney', name: 'Disney+', version: '1.4.2', status: 'updating', lastUpdate: '5m ago' },
+        { id: 'hbo', name: 'HBO Max', version: '1.2.0', status: 'error', lastUpdate: '3d ago' },
+      ]}}),
+      queueGet: async () => ({ queue: [], history: [] }),
+      checkDeps: async () => ({ python: true, devine: true, ffmpeg: true, ytdlp: true }),
+      getSettings: async () => ({}),
+      setSettings: async () => {},
+      updateModules: async () => ({ status: 'ok', data: { updated: 0 } }),
+      search: async () => ({ status: 'ok', data: { results: [] } }),
+      getMetadata: async () => ({ status: 'ok', data: {} }),
+      queueAdd: async (item) => { downloadQueue.push({ ...item, id: Date.now().toString(), status: 'queued', progress: 0 }); updateQueueBadge(); },
+      queueRemove: async (id) => { downloadQueue = downloadQueue.filter(q => q.id !== id); updateQueueBadge(); if (currentView === 'queue') renderQueueView(); },
+      queueClearCompleted: async () => {},
+      onQueueUpdate: () => {},
+      onDownloadProgress: () => {},
+      onDownloadComplete: () => {},
+      onHydraLog: () => {},
+    };
+    // Retry bridge connection
+    setTimeout(() => {
+      setBridgeStatus(true);
+      setActivityStatus('Ready');
+    }, 1500);
+  } else {
+    setBridgeStatus(true);
+  }
+
+  wireEvents();
+
+  try {
+    await loadSettings();
+  } catch (e) { console.error('Settings load failed:', e); }
+
+  try {
+    await loadModules();
+  } catch (e) { console.error('Modules load failed:', e); }
+
+  try {
+    const queueData = await window.hydra.queueGet();
+    renderQueue(queueData);
+  } catch (e) { console.error('Queue load failed:', e); }
+
+  try {
+    await checkDependencies();
+  } catch (e) { console.error('Dep check failed:', e); }
+
+  setActivityStatus('Ready');
+}
+
+// ============ MATRIX RAIN BACKGROUND ============
+(function initMatrixRain() {
+  const canvas = document.getElementById('matrixRain');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let w, h;
+  const GREEN = { r: 34, g: 197, b: 94 };
+  function rgba(c, a) { return `rgba(${c.r},${c.g},${c.b},${a})`; }
+
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+-=[]{}|;:,.<>?~';
+  const fontSize = 14;
+  let columns = [];
+  let drops = [];
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    const colCount = Math.floor(w / fontSize);
+    columns = new Array(colCount).fill(0);
+    drops = new Array(colCount).fill(0).map(() => Math.random() * h / fontSize);
+  }
+
+  function draw() {
+    // Very dim fade — creates trail effect
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.font = fontSize + 'px monospace';
+
+    for (let i = 0; i < columns.length; i++) {
+      const char = chars[Math.floor(Math.random() * chars.length)];
+      const x = i * fontSize;
+      const y = drops[i] * fontSize;
+
+      // Very subtle opacity — 0.03 to 0.05
+      const alpha = 0.03 + Math.random() * 0.02;
+      ctx.fillStyle = rgba(GREEN, alpha);
+      ctx.fillText(char, x, y);
+
+      // Occasionally make a brighter leading character
+      if (Math.random() < 0.01) {
+        ctx.fillStyle = rgba(GREEN, 0.12);
+        ctx.fillText(char, x, y);
+      }
+
+      if (y > h / fontSize && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i] += 0.5 + Math.random() * 0.5;
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+})();
+
+// Start the app
+document.addEventListener('DOMContentLoaded', init);
+// Also try immediately in case DOMContentLoaded already fired
+if (document.readyState !== 'loading') init();
+</script>
+</body>
+</html>

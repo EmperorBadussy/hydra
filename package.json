@@ -1,0 +1,42 @@
+{
+  "name": "hydra",
+  "version": "0.1.0",
+  "description": "HYDRA — Harvesting Your DRM Resource Archives",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.aether.hydra",
+    "productName": "HYDRA",
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    },
+    "extraResources": [
+      {
+        "from": "python/",
+        "to": "python/"
+      }
+    ],
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "hydra.html",
+      "icon.ico"
+    ]
+  },
+  "keywords": ["streaming", "ripper", "netflix", "prime", "hulu", "downloader", "aether", "drm"],
+  "author": "EmperorBadussy",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  }
+}
