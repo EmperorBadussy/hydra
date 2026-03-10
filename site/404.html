@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGNAL LOST — HYDRA</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='15' width='100' height='100' fill='%23060F06'/><text x='50' y='72' font-size='60' text-anchor='middle' fill='%2322C55E' font-family='sans-serif' font-weight='bold'>H</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;color:#ECFFF0;font-family:'JetBrains Mono',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(34,197,94,0.03) 2px,rgba(34,197,94,0.03) 4px);pointer-events:none;z-index:10;animation:scanlines 0.1s linear infinite}
+@keyframes scanlines{0%{transform:translateY(0)}100%{transform:translateY(4px)}}
+body::after{content:'';position:fixed;inset:0;z-index:5;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");animation:static 0.15s steps(3) infinite}
+@keyframes static{0%{opacity:0.08}50%{opacity:0.12}100%{opacity:0.06}}
+canvas{position:fixed;inset:0;z-index:1}
+.content{position:relative;z-index:20;text-align:center;padding:2rem}
+.error-code{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(6rem,15vw,12rem);color:#22C55E;text-shadow:0 0 20px rgba(34,197,94,0.5),0 0 60px rgba(34,197,94,0.2);line-height:1;animation:glitch404 4s infinite}
+@keyframes glitch404{0%,100%{text-shadow:0 0 20px rgba(34,197,94,0.5),0 0 60px rgba(34,197,94,0.2)}5%{text-shadow:-3px 0 #22C55E,3px 0 #6EE7A0;clip-path:inset(20% 0 30% 0)}10%{text-shadow:0 0 20px rgba(34,197,94,0.5);clip-path:none}50%{text-shadow:2px 0 #34D399,-2px 0 #22C55E;clip-path:inset(40% 0 20% 0)}55%{text-shadow:0 0 20px rgba(34,197,94,0.5);clip-path:none}}
+.signal-lost{font-family:'Orbitron',sans-serif;font-weight:700;font-size:clamp(1rem,3vw,1.8rem);color:#34D399;letter-spacing:0.3em;margin-bottom:1.5rem;animation:flicker 3s infinite}
+@keyframes flicker{0%,100%{opacity:1}50%{opacity:0.7}52%{opacity:1}70%{opacity:0.85}72%{opacity:1}}
+.message{font-size:0.85rem;color:#0E640E;line-height:1.8;margin-bottom:2.5rem;max-width:500px;margin-left:auto;margin-right:auto}
+.home-btn{font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.8rem;letter-spacing:0.12em;padding:1rem 2.5rem;border:1px solid #22C55E;border-radius:8px;background:transparent;color:#ECFFF0;cursor:pointer;text-decoration:none;transition:all 0.3s;display:inline-flex;align-items:center;gap:0.6rem}
+.home-btn:hover{background:#22C55E;color:#000;box-shadow:0 0 20px rgba(34,197,94,0.4),0 0 60px rgba(34,197,94,0.2)}
+.coords{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);font-size:0.6rem;color:#0D360D;letter-spacing:0.15em;z-index:20}
+</style>
+</head>
+<body>
+<canvas id="staticCanvas"></canvas>
+<div class="content">
+  <div class="error-code">404</div>
+  <div class="signal-lost">SIGNAL LOST</div>
+  <div class="message">
+    > HEAD NOT FOUND<br>
+    > All hydra heads searched. No matching route.<br>
+    > The beast cannot locate this resource.<br>
+    > Returning to the lair...
+  </div>
+  <a href="/" class="home-btn">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    RETURN TO LAIR
+  </a>
+</div>
+<div class="coords">HYDRA // ERR_HEAD_NOT_FOUND // SECTOR 404</div>
+<script>
+var c=document.getElementById('staticCanvas'),ctx=c.getContext('2d');
+function resize(){c.width=window.innerWidth;c.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+function drawStatic(){var d=ctx.createImageData(c.width,c.height);for(var i=0;i<d.data.length;i+=4){var v=Math.random()*255;d.data[i]=v*0.1;d.data[i+1]=v*0.3;d.data[i+2]=v*0.1;d.data[i+3]=Math.random()*15}ctx.putImageData(d,0,0);requestAnimationFrame(drawStatic)}
+drawStatic();
+</script>
+</body>
+</html>

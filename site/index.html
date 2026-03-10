@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HYDRA — Harvesting Your DRM Resource Archives</title>
+<meta name="description" content="Multi-headed streaming ripper with self-healing modules. Netflix. Prime. Hulu. YouTube. 1800+ sites. One beast.">
+<meta property="og:title" content="HYDRA — Harvesting Your DRM Resource Archives">
+<meta property="og:description" content="Multi-headed streaming ripper with self-healing modules. Netflix. Prime. Hulu. YouTube. 1800+ sites. One beast.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://emperorbadussy.github.io/hydra/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#22C55E">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='15' width='100' height='100' fill='%23060F06'/><text x='50' y='72' font-size='60' text-anchor='middle' fill='%2322C55E' font-family='sans-serif' font-weight='bold'>H</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   HYDRA — OLED MULTI-HEADED GREEN DESIGN
+   Harvesting Your DRM Resource Archives
+   ============================================ */
+
+:root {
+  --bg-void: #000000;
+  --bg-surface: #060F06;
+  --bg-raised: #0A190A;
+  --bg-input: #0C200C;
+  --green-dim: #0D360D;
+  --green-muted: #0E640E;
+  --green-core: #22C55E;
+  --green-bright: #34D399;
+  --green-vivid: #6EE7A0;
+  --green-hot: #A5F3C0;
+  --green-white: #ECFFF0;
+  --glow-subtle: 0 0 10px rgba(52,211,153,0.15);
+  --glow-medium: 0 0 20px rgba(52,211,153,0.25), 0 0 40px rgba(34,197,94,0.15);
+  --glow-intense: 0 0 20px rgba(52,211,153,0.4), 0 0 60px rgba(34,197,94,0.25), 0 0 100px rgba(34,197,94,0.1);
+  --glow-text: 0 0 8px rgba(110,231,160,0.6);
+  --glow-neon: 0 0 4px #6EE7A0, 0 0 12px rgba(110,231,160,0.5), 0 0 30px rgba(52,211,153,0.3), 0 0 60px rgba(34,197,94,0.15);
+  --font-display: 'Orbitron', sans-serif;
+  --font-body: 'Rajdhani', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-fast: 150ms var(--ease-smooth);
+  --transition-normal: 300ms var(--ease-smooth);
+  --transition-slow: 500ms var(--ease-smooth);
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes rotateAngle { to { --angle: 360deg; } }
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+::selection { background:rgba(34,197,94,0.4); color:var(--green-white); }
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:var(--bg-void); }
+::-webkit-scrollbar-thumb { background:var(--green-muted); border-radius:2px; }
+::-webkit-scrollbar-thumb:hover { background:var(--green-bright); box-shadow:0 0 8px rgba(52,211,153,0.5); }
+
+html { scroll-behavior:smooth; background:var(--bg-void); color:var(--green-white); font-family:var(--font-body); overflow-x:hidden; }
+body { background:var(--bg-void); min-height:100vh; overflow-x:hidden; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+
+/* ============ REVEAL ANIMATIONS ============ */
+.reveal { opacity:0; transform:translateY(40px); transition:opacity 0.8s var(--ease-smooth), transform 0.8s var(--ease-smooth); }
+.reveal.visible { opacity:1; transform:translateY(0); }
+.reveal-left { opacity:0; transform:translateX(-60px); transition:opacity 0.8s var(--ease-smooth), transform 0.8s var(--ease-smooth); }
+.reveal-left.visible { opacity:1; transform:translateX(0); }
+.reveal-right { opacity:0; transform:translateX(60px); transition:opacity 0.8s var(--ease-smooth), transform 0.8s var(--ease-smooth); }
+.reveal-right.visible { opacity:1; transform:translateX(0); }
+.reveal-scale { opacity:0; transform:scale(0.85); transition:opacity 0.8s var(--ease-smooth), transform 0.8s var(--ease-smooth); }
+.reveal-scale.visible { opacity:1; transform:scale(1); }
+
+/* ============ NAVIGATION ============ */
+.nav { position:fixed; top:0; left:0; right:0; z-index:1000; padding:1.25rem 2rem; display:flex; align-items:center; justify-content:space-between; transition:background 0.4s, backdrop-filter 0.4s, border-color 0.4s; border-bottom:1px solid transparent; }
+.nav.scrolled { background:rgba(6,15,6,0.85); backdrop-filter:blur(20px) saturate(1.2); border-bottom-color:var(--green-dim); }
+.nav-logo { font-family:var(--font-display); font-weight:800; font-size:1.5rem; color:var(--green-vivid); text-shadow:var(--glow-neon); text-decoration:none; display:flex; align-items:center; gap:0.5rem; transition:var(--transition-normal); }
+.nav-logo:hover { color:var(--green-hot); }
+.nav-logo .logo-p { display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border:2px solid var(--green-bright); border-radius:8px; font-size:1.2rem; box-shadow:var(--glow-neon); transition:var(--transition-normal); }
+.nav-logo:hover .logo-p { box-shadow:var(--glow-intense); border-color:var(--green-vivid); }
+.nav-links { display:flex; align-items:center; gap:2.5rem; list-style:none; }
+.nav-links a { font-family:var(--font-body); font-weight:500; font-size:1rem; color:var(--green-hot); text-decoration:none; position:relative; transition:var(--transition-normal); letter-spacing:0.03em; }
+.nav-links a::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:2px; background:var(--green-bright); box-shadow:var(--glow-subtle); transition:width 0.3s var(--ease-smooth); }
+.nav-links a:hover { color:var(--green-white); text-shadow:var(--glow-text); }
+.nav-links a:hover::after { width:100%; }
+.nav-cta { font-family:var(--font-display); font-weight:600; font-size:0.75rem; letter-spacing:0.1em; padding:0.6rem 1.4rem; border:1px solid var(--green-bright); border-radius:8px; background:transparent; color:var(--green-white) !important; cursor:pointer; transition:var(--transition-normal); text-decoration:none; }
+.nav-cta::after { display:none !important; }
+.nav-cta:hover { background:var(--green-core); box-shadow:var(--glow-medium); border-color:var(--green-vivid); }
+
+/* Mobile menu */
+.menu-toggle { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px; z-index:1002; }
+.menu-toggle span { display:block; width:24px; height:2px; background:var(--green-vivid); border-radius:2px; transition:var(--transition-normal); }
+.menu-toggle.active span:nth-child(1) { transform:rotate(45deg) translate(5px,5px); }
+.menu-toggle.active span:nth-child(2) { opacity:0; }
+.menu-toggle.active span:nth-child(3) { transform:rotate(-45deg) translate(5px,-5px); }
+.mobile-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.95); backdrop-filter:blur(30px); z-index:1001; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2rem; opacity:0; pointer-events:none; transition:opacity 0.5s; }
+.mobile-overlay.open { opacity:1; pointer-events:all; }
+.mobile-overlay a { font-family:var(--font-display); font-weight:600; font-size:1.5rem; color:var(--green-hot); text-decoration:none; transition:var(--transition-normal); letter-spacing:0.08em; }
+.mobile-overlay a:hover { color:var(--green-white); text-shadow:var(--glow-neon); }
+
+/* ============ HERO ============ */
+.hero { position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; padding:6rem 2rem 4rem; }
+#heroCanvas { position:absolute; inset:0; z-index:0; }
+.hero-content { position:relative; z-index:2; text-align:center; max-width:1200px; }
+.hero-badge { display:inline-flex; align-items:center; gap:0.5rem; padding:0.4rem 1rem; border:1px solid var(--green-dim); border-radius:999px; font-family:var(--font-mono); font-size:0.7rem; color:var(--green-hot); letter-spacing:0.08em; margin-bottom:2rem; animation:fadeInDown 1s 0.2s both; }
+.hero-badge .dot { width:6px; height:6px; background:var(--green-bright); border-radius:50%; box-shadow:0 0 8px var(--green-bright); animation:pulse-dot 2s infinite; }
+@keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.5;transform:scale(0.7);} }
+.hero-title { font-family:var(--font-display); font-weight:900; font-size:clamp(2.5rem,7vw,6rem); line-height:1.05; color:var(--green-white); text-shadow:var(--glow-neon); margin-bottom:1rem; letter-spacing:0.04em; }
+.hero-title .char { display:inline-block; animation:charReveal 0.6s both; animation-delay:var(--d); }
+@keyframes charReveal { 0%{opacity:0;transform:translateY(40px) rotateX(90deg);filter:blur(10px);} 100%{opacity:1;transform:translateY(0) rotateX(0);filter:blur(0);} }
+@keyframes fadeInDown { from{opacity:0;transform:translateY(-20px);} to{opacity:1;transform:translateY(0);} }
+@keyframes fadeInUp { from{opacity:0;transform:translateY(30px);} to{opacity:1;transform:translateY(0);} }
+.hero-tagline { font-family:var(--font-display); font-weight:500; font-size:clamp(1rem,2.5vw,1.5rem); color:var(--green-vivid); text-shadow:var(--glow-text); margin-bottom:1rem; letter-spacing:0.06em; animation:fadeInUp 0.8s 1s both; }
+.hero-sub { font-family:var(--font-body); font-weight:400; font-size:clamp(0.95rem,1.5vw,1.15rem); color:var(--green-hot); opacity:0.8; max-width:650px; margin:0 auto 2.5rem; line-height:1.6; animation:fadeInUp 0.8s 1.2s both; }
+.hero-buttons { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-bottom:3rem; animation:fadeInUp 0.8s 1.4s both; }
+.btn-primary { font-family:var(--font-display); font-weight:700; font-size:0.85rem; letter-spacing:0.12em; padding:1rem 2.5rem; border:none; border-radius:8px; background:linear-gradient(135deg,var(--green-core),var(--green-bright)); color:var(--bg-void); cursor:pointer; position:relative; overflow:hidden; transition:transform 0.2s var(--ease-bounce), box-shadow 0.3s; text-decoration:none; display:inline-flex; align-items:center; gap:0.6rem; }
+.btn-primary::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,var(--green-bright),var(--green-vivid)); opacity:0; transition:opacity 0.3s; }
+.btn-primary:hover { transform:translateY(-2px) scale(1.03); box-shadow:var(--glow-intense); }
+.btn-primary:hover::before { opacity:1; }
+.btn-primary:active { transform:translateY(0) scale(0.97); }
+.btn-primary span, .btn-primary svg { position:relative; z-index:1; }
+.btn-secondary { font-family:var(--font-display); font-weight:600; font-size:0.8rem; letter-spacing:0.1em; padding:1rem 2rem; border:1px solid var(--green-muted); border-radius:8px; background:transparent; color:var(--green-hot); cursor:pointer; transition:var(--transition-normal); text-decoration:none; display:inline-flex; align-items:center; gap:0.6rem; }
+.btn-secondary:hover { border-color:var(--green-bright); color:var(--green-white); box-shadow:var(--glow-medium); background:rgba(34,197,94,0.1); }
+
+/* ============ APP MOCKUP ============ */
+.mockup-container { animation:fadeInUp 1s 1.6s both; perspective:1200px; margin-bottom:2rem; }
+.app-mockup { background:var(--bg-surface); border:1px solid var(--green-dim); border-radius:16px; box-shadow:var(--glow-intense), 0 30px 80px rgba(0,0,0,0.8); width:100%; max-width:900px; margin:0 auto; overflow:hidden; transform:rotateX(4deg) scale(0.95); transition:transform 0.6s var(--ease-smooth); }
+.app-mockup:hover { transform:rotateX(0) scale(1); }
+.mock-titlebar { display:flex; align-items:center; justify-content:space-between; padding:0.6rem 1rem; background:rgba(10,25,10,0.9); border-bottom:1px solid var(--green-dim); }
+.mock-titlebar-left { display:flex; align-items:center; gap:0.5rem; }
+.mock-titlebar-logo { font-family:var(--font-display); font-weight:700; font-size:0.55rem; color:var(--green-vivid); text-shadow:var(--glow-text); letter-spacing:0.15em; }
+.mock-dots { display:flex; gap:6px; }
+.mock-dots span { width:10px; height:10px; border-radius:50%; border:1px solid var(--green-dim); }
+.mock-dots span:nth-child(1) { background:rgba(34,197,94,0.3); }
+.mock-dots span:nth-child(2) { background:rgba(34,197,94,0.5); }
+.mock-dots span:nth-child(3) { background:rgba(255,68,102,0.5); border-color:rgba(255,68,102,0.3); }
+.mock-body { display:grid; grid-template-columns:180px 1fr; height:320px; }
+.mock-sidebar { background:var(--bg-surface); border-right:1px solid var(--green-dim); padding:0.8rem; display:flex; flex-direction:column; gap:0.3rem; }
+.mock-sidebar-item { display:flex; align-items:center; gap:0.5rem; padding:0.4rem 0.5rem; border-radius:6px; font-family:var(--font-body); font-size:0.6rem; color:var(--green-muted); letter-spacing:0.05em; transition:var(--transition-fast); }
+.mock-sidebar-item.active { background:rgba(34,197,94,0.12); color:var(--green-bright); }
+.mock-sidebar-item svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:1.5; flex-shrink:0; }
+.mock-status-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-left:auto; }
+.mock-status-dot.online { background:var(--green-bright); box-shadow:0 0 6px var(--green-bright); }
+.mock-status-dot.offline { background:var(--green-muted); }
+.mock-search-box { display:flex; align-items:center; gap:0.4rem; padding:0.4rem 0.5rem; background:var(--bg-input); border:1px solid var(--green-dim); border-radius:6px; margin-bottom:0.5rem; }
+.mock-search-box svg { width:12px; height:12px; stroke:var(--green-muted); fill:none; stroke-width:1.5; }
+.mock-search-text { font-family:var(--font-body); font-size:0.55rem; color:var(--green-muted); }
+.mock-main-area { display:flex; flex-direction:column; background:var(--bg-void); overflow:hidden; }
+.mock-main-header { padding:0.6rem 0.8rem; font-family:var(--font-display); font-size:0.55rem; color:var(--green-vivid); letter-spacing:0.1em; border-bottom:1px solid var(--green-dim); }
+.mock-results-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem; padding:0.6rem; flex:1; overflow:hidden; }
+.mock-media-card { background:var(--bg-surface); border:1px solid var(--green-dim); border-radius:8px; padding:0.5rem; display:flex; flex-direction:column; align-items:center; gap:0.3rem; transition:var(--transition-fast); }
+.mock-media-thumb { width:100%; height:36px; border-radius:4px; background:linear-gradient(135deg,var(--green-dim),var(--green-core)); box-shadow:0 0 10px rgba(34,197,94,0.2); }
+.mock-media-name { font-family:var(--font-display); font-size:0.45rem; color:var(--green-white); letter-spacing:0.05em; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; }
+.mock-media-sub { font-family:var(--font-body); font-size:0.4rem; color:var(--green-muted); }
+.mock-bottombar { border-top:1px solid var(--green-dim); background:var(--bg-raised); padding:0.5rem 0.8rem; display:flex; align-items:center; gap:0.6rem; }
+.mock-dl-icon { width:24px; height:24px; border-radius:4px; background:linear-gradient(135deg,var(--green-dim),var(--green-core)); flex-shrink:0; }
+.mock-dl-info { flex:1; min-width:0; }
+.mock-dl-title { font-family:var(--font-display); font-size:0.5rem; color:var(--green-white); letter-spacing:0.05em; }
+.mock-dl-detail { font-family:var(--font-mono); font-size:0.4rem; color:var(--green-muted); }
+.mock-dl-progress { width:120px; height:3px; background:var(--green-dim); border-radius:2px; overflow:hidden; }
+.mock-dl-progress-fill { height:100%; background:var(--green-bright); border-radius:2px; box-shadow:0 0 6px rgba(52,211,153,0.5); animation:mock-dl-anim 6s linear infinite; }
+@keyframes mock-dl-anim { 0%{width:0%} 100%{width:100%} }
+.mock-dl-percent { font-family:var(--font-mono); font-size:0.45rem; color:var(--green-bright); white-space:nowrap; }
+
+/* Scroll indicator */
+.scroll-indicator { position:absolute; bottom:2rem; left:50%; transform:translateX(-50%); z-index:2; animation:scroll-bounce 2s infinite; }
+.scroll-indicator svg { width:24px; height:24px; stroke:var(--green-muted); fill:none; stroke-width:1.5; }
+@keyframes scroll-bounce { 0%,100%{transform:translateX(-50%) translateY(0);opacity:0.5;} 50%{transform:translateX(-50%) translateY(10px);opacity:1;} }
+
+/* Click ripple */
+.click-ripple { position:fixed; border-radius:50%; background:radial-gradient(circle,rgba(52,211,153,0.3),transparent 70%); pointer-events:none; z-index:99998; animation:ripple-out 0.6s ease-out forwards; }
+@keyframes ripple-out { 0%{width:0;height:0;opacity:1;} 100%{width:300px;height:300px;opacity:0;} }
+
+/* ============ SECTION LAYOUT ============ */
+.section { padding:clamp(4rem,10vw,8rem) clamp(1.5rem,5vw,4rem); position:relative; }
+.section-inner { max-width:1280px; margin:0 auto; }
+.section-label { font-family:var(--font-mono); font-size:0.7rem; font-weight:400; color:var(--green-bright); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:1rem; display:flex; align-items:center; gap:0.75rem; }
+.section-label::before { content:''; width:32px; height:1px; background:var(--green-bright); box-shadow:0 0 8px rgba(52,211,153,0.5); }
+.section-title { font-family:var(--font-display); font-weight:700; font-size:clamp(1.8rem,4vw,3rem); color:var(--green-white); text-shadow:var(--glow-text); margin-bottom:1rem; line-height:1.1; letter-spacing:0.02em; }
+.section-desc { font-family:var(--font-body); font-size:1.1rem; color:var(--green-hot); opacity:0.8; max-width:600px; line-height:1.6; margin-bottom:3rem; }
+
+/* ============ STEP CARDS ============ */
+.steps-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.25rem; }
+.step-card { background:var(--bg-surface); border:1px solid var(--green-dim); border-radius:12px; overflow:hidden; transition:var(--transition-normal); cursor:default; position:relative; }
+.step-card:hover { border-color:var(--green-muted); box-shadow:var(--glow-medium); transform:translateY(-4px); }
+.step-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--green-bright),transparent); opacity:0; transition:var(--transition-normal); }
+.step-card:hover::before { opacity:1; }
+.step-preview { height:160px; background:var(--bg-void); position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+.step-preview canvas { width:100%; height:100%; display:block; }
+.step-number { position:absolute; top:0.6rem; left:0.8rem; font-family:var(--font-mono); font-size:0.6rem; color:var(--green-muted); letter-spacing:0.15em; z-index:2; }
+.step-info { padding:1rem 1.25rem; }
+.step-name { font-family:var(--font-display); font-weight:600; font-size:0.85rem; color:var(--green-white); letter-spacing:0.08em; margin-bottom:0.3rem; }
+.step-desc { font-family:var(--font-body); font-size:0.85rem; color:var(--green-muted); line-height:1.4; }
+
+/* ============ FEATURES ============ */
+.features-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.25rem; }
+.feature-card { background:var(--bg-surface); border:1px solid var(--green-dim); border-radius:12px; padding:1.5rem; transition:var(--transition-normal); position:relative; overflow:hidden; }
+.feature-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--green-bright),transparent); opacity:0; transition:var(--transition-normal); }
+.feature-card:hover { border-color:var(--green-muted); box-shadow:var(--glow-medium); transform:translateY(-3px); }
+.feature-card:hover::before { opacity:1; }
+.feature-icon { width:44px; height:44px; border-radius:10px; background:rgba(34,197,94,0.15); border:1px solid var(--green-dim); display:flex; align-items:center; justify-content:center; margin-bottom:1rem; transition:var(--transition-normal); }
+.feature-card:hover .feature-icon { border-color:var(--green-muted); box-shadow:var(--glow-subtle); background:rgba(34,197,94,0.25); }
+.feature-icon svg { width:22px; height:22px; stroke:var(--green-bright); fill:none; stroke-width:1.5; }
+.feature-title { font-family:var(--font-display); font-weight:600; font-size:0.85rem; color:var(--green-white); letter-spacing:0.05em; margin-bottom:0.4rem; }
+.feature-text { font-family:var(--font-body); font-size:0.9rem; color:var(--green-muted); line-height:1.5; }
+
+/* ============ TECH STACK ============ */
+.tech-section { background:var(--bg-surface); border-top:1px solid var(--green-dim); border-bottom:1px solid var(--green-dim); }
+.tech-grid { display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; }
+.tech-badge { display:inline-flex; align-items:center; gap:0.5rem; padding:0.7rem 1.2rem; background:var(--bg-raised); border:1px solid var(--green-dim); border-radius:8px; font-family:var(--font-mono); font-size:0.8rem; color:var(--green-hot); transition:var(--transition-normal); cursor:default; }
+.tech-badge:hover { border-color:var(--green-muted); box-shadow:var(--glow-medium); color:var(--green-white); transform:translateY(-2px); }
+.tech-badge .tech-dot { width:8px; height:8px; border-radius:50%; background:var(--green-bright); box-shadow:0 0 6px var(--green-bright); }
+
+/* Architecture diagram */
+.arch-diagram { margin-top:3rem; padding:2rem; background:var(--bg-void); border:1px solid var(--green-dim); border-radius:12px; font-family:var(--font-mono); font-size:0.75rem; color:var(--green-hot); overflow-x:auto; }
+.arch-row { display:flex; align-items:center; justify-content:center; gap:0.5rem; margin:0.5rem 0; }
+.arch-box { padding:0.5rem 1rem; border:1px solid var(--green-dim); border-radius:6px; background:var(--bg-surface); text-align:center; transition:var(--transition-normal); white-space:nowrap; }
+.arch-box:hover { border-color:var(--green-bright); box-shadow:var(--glow-subtle); }
+.arch-box.highlight { border-color:var(--green-bright); box-shadow:var(--glow-medium); color:var(--green-white); }
+.arch-arrow { color:var(--green-muted); font-size:1rem; }
+
+/* ============ PIPELINE ============ */
+.pipeline { display:flex; flex-direction:column; gap:0; align-items:center; margin:2rem 0; }
+.pipeline-node { display:flex; align-items:center; gap:0.8rem; padding:0.8rem 1.5rem; background:var(--bg-surface); border:1px solid var(--green-dim); border-radius:8px; font-family:var(--font-mono); font-size:0.8rem; color:var(--green-hot); transition:var(--transition-normal); width:fit-content; }
+.pipeline-node:hover { border-color:var(--green-bright); box-shadow:var(--glow-medium); color:var(--green-white); }
+.pipeline-node .node-icon { width:10px; height:10px; border-radius:50%; background:var(--green-bright); box-shadow:0 0 8px var(--green-bright); flex-shrink:0; }
+.pipeline-connector { width:1px; height:24px; background:linear-gradient(to bottom,var(--green-dim),var(--green-bright),var(--green-dim)); }
+
+/* ============ DOWNLOAD CTA ============ */
+.download-section { text-align:center; position:relative; overflow:hidden; }
+.download-section::before { content:''; position:absolute; top:50%; left:50%; width:600px; height:600px; transform:translate(-50%,-50%); background:radial-gradient(circle,rgba(34,197,94,0.15) 0%,transparent 70%); pointer-events:none; }
+.download-title { font-family:var(--font-display); font-weight:700; font-size:clamp(1.8rem,4vw,3.2rem); color:var(--green-white); text-shadow:var(--glow-neon); margin-bottom:1rem; line-height:1.1; }
+.download-sub { font-family:var(--font-body); font-size:1.1rem; color:var(--green-hot); opacity:0.8; margin-bottom:2.5rem; max-width:500px; margin-left:auto; margin-right:auto; line-height:1.6; }
+.download-buttons { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-bottom:2rem; }
+.btn-download { font-family:var(--font-display); font-weight:700; font-size:0.9rem; letter-spacing:0.1em; padding:1.2rem 3rem; border:none; border-radius:8px; background:linear-gradient(135deg,var(--green-core),var(--green-bright)); color:var(--bg-void); cursor:pointer; transition:transform 0.2s var(--ease-bounce), box-shadow 0.3s; text-decoration:none; display:inline-flex; align-items:center; gap:0.75rem; position:relative; overflow:hidden; }
+.btn-download::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,var(--green-bright),var(--green-vivid)); opacity:0; transition:opacity 0.3s; }
+.btn-download:hover { transform:translateY(-3px) scale(1.04); box-shadow:var(--glow-intense), 0 20px 50px rgba(34,197,94,0.3); }
+.btn-download:hover::before { opacity:1; }
+.btn-download span, .btn-download svg { position:relative; z-index:1; }
+
+.sys-req { font-family:var(--font-mono); font-size:0.7rem; color:var(--green-muted); line-height:1.8; margin-top:2rem; }
+.github-link { display:inline-flex; align-items:center; gap:0.5rem; margin-top:1.5rem; font-family:var(--font-body); font-size:0.95rem; color:var(--green-vivid); text-decoration:none; transition:var(--transition-normal); }
+.github-link:hover { color:var(--green-white); text-shadow:var(--glow-text); }
+.github-link svg { width:20px; height:20px; fill:currentColor; }
+.companion-link { display:inline-flex; align-items:center; gap:0.5rem; margin-top:1.5rem; font-family:var(--font-body); font-size:1rem; color:var(--green-vivid); text-decoration:none; transition:var(--transition-normal); padding:0.6rem 1.2rem; border:1px solid var(--green-dim); border-radius:8px; }
+.companion-link:hover { color:var(--green-white); text-shadow:var(--glow-text); border-color:var(--green-muted); background:rgba(34,197,94,0.08); box-shadow:var(--glow-subtle); }
+
+/* ============ FOOTER ============ */
+.footer { border-top:1px solid var(--green-dim); padding:3rem 2rem; }
+.footer-inner { max-width:1280px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:2rem; }
+.footer-brand { display:flex; flex-direction:column; gap:0.5rem; }
+.footer-logo { font-family:var(--font-display); font-weight:800; font-size:1rem; color:var(--green-vivid); text-shadow:var(--glow-text); letter-spacing:0.1em; }
+.footer-tagline { font-family:var(--font-body); font-size:0.85rem; color:var(--green-muted); font-style:italic; }
+.footer-links { display:flex; gap:2rem; list-style:none; flex-wrap:wrap; }
+.footer-links a { font-family:var(--font-body); font-size:0.9rem; color:var(--green-hot); text-decoration:none; transition:var(--transition-normal); }
+.footer-links a:hover { color:var(--green-white); text-shadow:var(--glow-text); }
+.footer-copy { width:100%; text-align:center; font-family:var(--font-mono); font-size:0.65rem; color:var(--green-dim); margin-top:1rem; padding-top:1.5rem; border-top:1px solid rgba(13,54,13,0.4); }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:1024px) { .steps-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:768px) {
+  .nav-links { display:none; }
+  .menu-toggle { display:flex; }
+  .mock-body { grid-template-columns:1fr; height:auto; }
+  .mock-sidebar { display:none; }
+  .mock-main-area { min-height:240px; }
+  .mock-results-grid { grid-template-columns:repeat(2,1fr); }
+  .features-grid { grid-template-columns:1fr; }
+  .footer-inner { flex-direction:column; text-align:center; }
+  .footer-links { justify-content:center; }
+  .steps-grid { grid-template-columns:1fr; }
+}
+@media (max-width:600px) {
+  .hero { padding-top:5rem; padding-left:1rem; padding-right:1rem; }
+  .hero-sub { max-width:100%; padding:0 0.5rem; }
+  .hero-tagline { letter-spacing:0.02em; }
+  .hero-badge { font-size:0.55rem; letter-spacing:0.06em; padding:0.4rem 0.8rem; }
+  .app-mockup { border-radius:10px; }
+  .mock-results-grid { grid-template-columns:1fr 1fr; }
+  .section { padding-left:1rem; padding-right:1rem; }
+  .section-title { word-break:break-word; }
+  .section-desc { font-size:0.95rem; }
+  .btn-primary, .btn-secondary { font-size:0.75rem; padding:0.8rem 1.5rem; letter-spacing:0.06em; }
+  .btn-download { font-size:0.8rem; padding:0.9rem 1.8rem; }
+  .arch-diagram { padding:1rem; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .arch-box { white-space:normal; font-size:0.65rem; padding:0.4rem 0.6rem; }
+  .arch-row { flex-wrap:wrap; gap:0.3rem; }
+  .pipeline-node { font-size:0.7rem; padding:0.6rem 1rem; max-width:100%; }
+  .tech-badge { font-size:0.7rem; padding:0.5rem 0.8rem; }
+  .feature-card { padding:1.25rem; }
+  .feature-title { font-size:0.8rem; }
+  .feature-text { font-size:0.82rem; }
+  .step-preview { height:130px; }
+  .step-info { padding:0.8rem 1rem; }
+  .step-name { font-size:0.78rem; }
+  .step-desc { font-size:0.78rem; }
+  .sys-req { font-size:0.7rem; padding:0.8rem; }
+  .download-title { word-break:break-word; }
+  .footer-inner { padding:0 0.5rem; }
+  .footer-links { gap:0.8rem; font-size:0.75rem; }
+  .footer-tagline { font-size:0.7rem; }
+  .github-link { font-size:0.8rem; }
+}
+@media (max-width:380px) {
+  .hero-title { letter-spacing:-0.01em; }
+  .hero-buttons { flex-direction:column; align-items:center; gap:0.6rem; }
+  .btn-primary, .btn-secondary { width:100%; justify-content:center; font-size:0.7rem; }
+  .btn-download { width:100%; justify-content:center; }
+  .section { padding-left:0.75rem; padding-right:0.75rem; }
+  .nav { padding:0 0.75rem; }
+  .tech-grid { gap:0.5rem; }
+  .tech-badge { font-size:0.6rem; padding:0.4rem 0.6rem; }
+  .arch-box { font-size:0.55rem; padding:0.3rem 0.5rem; }
+}
+
+/* ============ CURSOR GLOW ============ */
+.cursor-glow { position:fixed; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(34,197,94,0.06) 0%,transparent 70%); pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:opacity 0.3s; }
+
+/* ============ POLISH ENHANCEMENTS ============ */
+body::after { content:''; position:fixed; inset:0; z-index:99997; pointer-events:none; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); opacity:0.4; }
+.scroll-progress { position:fixed; top:0; left:0; height:2px; background:linear-gradient(90deg,var(--green-core),var(--green-vivid),var(--green-hot)); box-shadow:0 0 8px rgba(52,211,153,0.6), 0 0 20px rgba(34,197,94,0.3); z-index:10001; width:0%; transition:width 0.05s linear; }
+.section-divider { height:1px; background:linear-gradient(90deg,transparent 5%,var(--green-dim) 20%,var(--green-bright) 50%,var(--green-dim) 80%,transparent 95%); box-shadow:0 0 10px rgba(52,211,153,0.2), 0 0 30px rgba(34,197,94,0.1); opacity:0.6; }
+.hero-title-glitch { animation:titleGlitch 8s 2.5s infinite; }
+@keyframes titleGlitch {
+  0%,100% { text-shadow:var(--glow-neon); }
+  2% { text-shadow:-3px 0 var(--green-core), 3px 0 var(--green-vivid); clip-path:inset(35% 0 25% 0); }
+  4% { text-shadow:var(--glow-neon); clip-path:none; }
+  42% { text-shadow:2px 0 var(--green-bright), -2px 0 var(--green-core); clip-path:inset(15% 0 55% 0); }
+  44% { text-shadow:var(--glow-neon); clip-path:none; }
+}
+
+/* ============ LOADING SCREEN ============ */
+@keyframes loadGlitch {
+  0%,100% { color:#34D399; text-shadow:0 0 10px rgba(52,211,153,0.5); }
+  25% { color:#6EE7A0; text-shadow:-2px 0 #22C55E, 2px 0 #A5F3C0; }
+  50% { color:#22C55E; text-shadow:2px 0 #34D399, -2px 0 #6EE7A0; }
+  75% { color:#A5F3C0; text-shadow:-1px 0 #6EE7A0, 1px 0 #22C55E; }
+}
+
+/* ============ DECLASSIFIED MODE ============ */
+.declassified-toggle { font-family:var(--font-mono); font-size:0.65rem; letter-spacing:0.08em; padding:0.4rem 0.8rem; border:1px solid var(--green-bright); border-radius:4px; background:transparent; color:var(--green-bright); cursor:pointer; transition:var(--transition-normal); margin-left:0.5rem; }
+.declassified-toggle:hover { background:rgba(52,211,153,0.1); box-shadow:var(--glow-subtle); }
+body.declassified { font-family:'JetBrains Mono',monospace !important; background:#000 !important; }
+body.declassified * { font-family:'JetBrains Mono',monospace !important; border-radius:0 !important; }
+body.declassified h1, body.declassified h2, body.declassified h3,
+body.declassified h4, body.declassified h5, body.declassified h6,
+body.declassified .hero-title, body.declassified .section-title,
+body.declassified .download-title, body.declassified .nav-logo { color:#0f0 !important; text-shadow:0 0 8px rgba(0,255,0,0.5) !important; }
+body.declassified p, body.declassified span, body.declassified a,
+body.declassified li, body.declassified div, body.declassified label { color:#0a0 !important; }
+body.declassified canvas, body.declassified img { filter:grayscale(1) !important; }
+body.declassified .section-divider, body.declassified .hero-badge,
+body.declassified .mockup-container, body.declassified .app-mockup { border-color:#0a0 !important; }
+body.declassified .nav { background:rgba(0,0,0,0.95) !important; border-bottom-color:#0a0 !important; }
+body.declassified .btn-primary, body.declassified .btn-secondary,
+body.declassified .nav-cta, body.declassified .btn-download { background:transparent !important; border:1px solid #0f0 !important; color:#0f0 !important; box-shadow:none !important; }
+body.declassified .declassified-toggle { border-color:#0f0 !important; color:#0f0 !important; }
+
+/* ============ COMMAND PALETTE ============ */
+.cmd-palette-overlay { position:fixed; inset:0; z-index:90000; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); display:flex; align-items:flex-start; justify-content:center; padding-top:20vh; opacity:0; visibility:hidden; transition:opacity 0.2s, visibility 0.2s; }
+.cmd-palette-overlay.open { opacity:1; visibility:visible; }
+.cmd-palette { background:var(--bg-surface); border:1px solid var(--green-dim); border-radius:12px; width:90%; max-width:520px; box-shadow:var(--glow-intense), 0 20px 60px rgba(0,0,0,0.8); overflow:hidden; }
+.cmd-palette input { width:100%; padding:1rem 1.2rem; background:transparent; border:none; border-bottom:1px solid var(--green-dim); color:var(--green-white); font-family:var(--font-mono); font-size:0.9rem; outline:none; }
+.cmd-palette input::placeholder { color:var(--green-muted); }
+.cmd-results { max-height:300px; overflow-y:auto; padding:0.4rem; }
+.cmd-item { padding:0.6rem 1rem; color:var(--green-hot); font-family:var(--font-body); font-size:0.85rem; cursor:pointer; border-radius:6px; display:flex; align-items:center; gap:0.6rem; transition:background 0.15s, color 0.15s; }
+.cmd-item:hover, .cmd-item.active { background:rgba(52,211,153,0.1); color:var(--green-white); }
+.cmd-item .cmd-key { font-family:var(--font-mono); font-size:0.6rem; color:var(--green-muted); margin-left:auto; }
+.cmd-hint { text-align:center; padding:0.5rem; font-family:var(--font-mono); font-size:0.6rem; color:var(--green-muted); border-top:1px solid var(--green-dim); }
+
+/* ============ PORTAL TRANSITION ============ */
+@keyframes portalWarp {
+  0% { transform:scale(1); filter:brightness(1) blur(0); opacity:1; }
+  50% { transform:scale(0.95); filter:brightness(1.5) blur(2px); opacity:0.8; }
+  100% { transform:scale(0.5) rotate(3deg); filter:brightness(3) blur(10px); opacity:0; }
+}
+body.portal-out { animation:portalWarp 0.6s var(--ease-smooth) forwards; }
+
+</style>
+</head>
+<body>
+
+<div id="loadingScreen" style="position:fixed;inset:0;z-index:99999;background:#030F03;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity 0.5s,visibility 0.5s">
+  <div style="font-family:'Orbitron',monospace;font-size:clamp(2rem,5vw,3.5rem);color:#34D399;letter-spacing:0.3em;animation:loadGlitch 0.15s infinite">HYDRA</div>
+  <div style="width:200px;height:2px;background:#0A190A;margin-top:1.5rem;border-radius:1px;overflow:hidden">
+    <div id="loadBar" style="width:0%;height:100%;background:linear-gradient(90deg,#22C55E,#6EE7A0);transition:width 0.3s"></div>
+  </div>
+</div>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- ============ NAVIGATION ============ -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo">
+    <span class="logo-p">H</span>
+    YDRA
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how-it-works">The Heads</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#tech">Tech</a></li>
+    <li><a href="#healing">Self-Healing</a></li>
+    <li><a href="#download" class="nav-cta">DOWNLOAD</a></li>
+    <li><button class="declassified-toggle" id="declassifiedBtn" title="Toggle Declassified Mode">[CLASSIFIED]</button></li>
+  </ul>
+  <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-overlay" id="mobileMenu">
+  <a href="#how-it-works" onclick="closeMobile()">THE HEADS</a>
+  <a href="#features" onclick="closeMobile()">FEATURES</a>
+  <a href="#tech" onclick="closeMobile()">TECH</a>
+  <a href="#healing" onclick="closeMobile()">SELF-HEALING</a>
+  <a href="#download" onclick="closeMobile()">DOWNLOAD</a>
+  <a href="https://emperorbadussy.github.io/suite/" onclick="closeMobile()">THE SUITE</a>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      VERSION 0.1.0 — PART OF THE SUITE
+    </div>
+    <h1 class="hero-title" id="heroTitle"></h1>
+    <p class="hero-tagline" id="heroTagline"></p>
+    <p class="hero-sub">Multi-headed streaming ripper with self-healing modules. Netflix. Prime. Hulu. YouTube. 1800+ sites. One beast.</p>
+    <div class="hero-buttons">
+      <a href="https://github.com/EmperorBadussy/hydra/releases" class="btn-primary" target="_blank">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>DOWNLOAD FOR WINDOWS</span>
+      </a>
+      <a href="https://github.com/EmperorBadussy/hydra" class="btn-secondary" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        <span>VIEW SOURCE</span>
+      </a>
+    </div>
+    <div class="mockup-container">
+      <div class="app-mockup">
+        <div class="mock-titlebar">
+          <div class="mock-titlebar-left">
+            <span class="mock-titlebar-logo">HYDRA v0.1.0</span>
+          </div>
+          <div class="mock-dots">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="mock-body">
+          <div class="mock-sidebar">
+            <div class="mock-search-box">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span class="mock-search-text">Search media...</span>
+            </div>
+            <div style="font-family:var(--font-display);font-size:0.45rem;color:var(--green-muted);letter-spacing:0.15em;padding:0.2rem 0.5rem;margin-bottom:0.2rem;">MODULES</div>
+            <div class="mock-sidebar-item active">
+              <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Netflix Head
+              <span class="mock-status-dot online"></span>
+            </div>
+            <div class="mock-sidebar-item">
+              <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Prime Head
+              <span class="mock-status-dot online"></span>
+            </div>
+            <div class="mock-sidebar-item">
+              <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              YouTube Head
+              <span class="mock-status-dot online"></span>
+            </div>
+            <div class="mock-sidebar-item">
+              <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              Health Monitor
+              <span class="mock-status-dot online"></span>
+            </div>
+            <div class="mock-sidebar-item">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              Settings
+            </div>
+          </div>
+          <div class="mock-main-area">
+            <div class="mock-main-header">SEARCH RESULTS &mdash; "BREAKING BAD"</div>
+            <div class="mock-results-grid">
+              <div class="mock-media-card">
+                <div class="mock-media-thumb" style="background:linear-gradient(135deg,#0D360D,#22C55E);"></div>
+                <div class="mock-media-name">Breaking Bad</div>
+                <div class="mock-media-sub">Netflix &bull; S1-S5</div>
+              </div>
+              <div class="mock-media-card">
+                <div class="mock-media-thumb" style="background:linear-gradient(135deg,#0A190A,#0E640E);"></div>
+                <div class="mock-media-name">Better Call Saul</div>
+                <div class="mock-media-sub">Netflix &bull; S1-S6</div>
+              </div>
+              <div class="mock-media-card">
+                <div class="mock-media-thumb" style="background:linear-gradient(135deg,#0D360D,#34D399);"></div>
+                <div class="mock-media-name">El Camino</div>
+                <div class="mock-media-sub">Netflix &bull; Movie</div>
+              </div>
+              <div class="mock-media-card">
+                <div class="mock-media-thumb" style="background:linear-gradient(135deg,#0E640E,#22C55E);"></div>
+                <div class="mock-media-name">Ozark</div>
+                <div class="mock-media-sub">Netflix &bull; S1-S4</div>
+              </div>
+              <div class="mock-media-card">
+                <div class="mock-media-thumb" style="background:linear-gradient(135deg,#0C200C,#0E640E);"></div>
+                <div class="mock-media-name">The Wire</div>
+                <div class="mock-media-sub">Prime &bull; S1-S5</div>
+              </div>
+              <div class="mock-media-card">
+                <div class="mock-media-thumb" style="background:linear-gradient(135deg,#0D360D,#6EE7A0);"></div>
+                <div class="mock-media-name">Narcos</div>
+                <div class="mock-media-sub">Netflix &bull; S1-S3</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mock-bottombar">
+          <div class="mock-dl-icon"></div>
+          <div class="mock-dl-info">
+            <div class="mock-dl-title">Breaking Bad &mdash; S01E01 &mdash; Pilot</div>
+            <div class="mock-dl-detail">1080p HEVC &bull; 1.8 GB</div>
+          </div>
+          <div class="mock-dl-progress">
+            <div class="mock-dl-progress-fill"></div>
+          </div>
+          <div class="mock-dl-percent">67%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ============ 01 // THE HEADS ============ -->
+<section class="section" id="how-it-works">
+  <div class="section-inner">
+    <div class="section-label reveal">01 // THE HEADS</div>
+    <h2 class="section-title reveal">How the Beast Works</h2>
+    <p class="section-desc reveal">Four steps. Search across every streaming service. Select your quality. Download with tracking. Self-healing modules handle the rest.</p>
+
+    <div class="steps-grid">
+      <div class="step-card reveal-scale" style="transition-delay:0.05s">
+        <div class="step-preview">
+          <canvas class="step-canvas" data-step="search"></canvas>
+          <div class="step-number">01</div>
+        </div>
+        <div class="step-info">
+          <div class="step-name">SEARCH</div>
+          <div class="step-desc">Search across Netflix, Prime, Hulu, YouTube, and 1800+ streaming services simultaneously.</div>
+        </div>
+      </div>
+
+      <div class="step-card reveal-scale" style="transition-delay:0.15s">
+        <div class="step-preview">
+          <canvas class="step-canvas" data-step="select"></canvas>
+          <div class="step-number">02</div>
+        </div>
+        <div class="step-info">
+          <div class="step-name">SELECT</div>
+          <div class="step-desc">Choose quality and format. 4K, 1080p, 720p, 480p, audio-only. Full codec control.</div>
+        </div>
+      </div>
+
+      <div class="step-card reveal-scale" style="transition-delay:0.25s">
+        <div class="step-preview">
+          <canvas class="step-canvas" data-step="download"></canvas>
+          <div class="step-number">03</div>
+        </div>
+        <div class="step-info">
+          <div class="step-name">DOWNLOAD</div>
+          <div class="step-desc">Concurrent downloads with real-time progress tracking. Queue management. Pause and resume.</div>
+        </div>
+      </div>
+
+      <div class="step-card reveal-scale" style="transition-delay:0.35s">
+        <div class="step-preview">
+          <canvas class="step-canvas" data-step="heal"></canvas>
+          <div class="step-number">04</div>
+        </div>
+        <div class="step-info">
+          <div class="step-name">HEAL</div>
+          <div class="step-desc">Modules auto-update from GitHub. Broken heads regenerate. Cut one off, two more grow back.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ============ 02 // FEATURES ============ -->
+<section class="section" id="features">
+  <div class="section-inner">
+    <div class="section-label reveal">02 // FEATURES</div>
+    <h2 class="section-title reveal">The Hydra's Arsenal</h2>
+    <p class="section-desc reveal">Eight heads of capability. Each one specialized. Each one self-healing. Together, unstoppable.</p>
+
+    <div class="features-grid">
+      <div class="feature-card reveal" style="transition-delay:0.05s">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div class="feature-title">SELF-HEALING MODULES</div>
+        <div class="feature-text">Hot-swap plugins that auto-update from GitHub. Each service module monitors its own health and regenerates on failure.</div>
+      </div>
+
+      <div class="feature-card reveal" style="transition-delay:0.1s">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div class="feature-title">MULTI-SERVICE SUPPORT</div>
+        <div class="feature-text">Netflix, Prime Video, Hulu, Disney+, YouTube, and 1800+ streaming sites. One interface to rip them all.</div>
+      </div>
+
+      <div class="feature-card reveal" style="transition-delay:0.15s">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="feature-title">PLUGIN ARCHITECTURE</div>
+        <div class="feature-text">Each streaming service is a separate Python module. Add new heads without touching the core. Community-driven plugins.</div>
+      </div>
+
+      <div class="feature-card reveal" style="transition-delay:0.2s">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <div class="feature-title">DOWNLOAD QUEUE</div>
+        <div class="feature-text">Concurrent downloads with progress tracking. Priority management. Persistent queue across restarts. Batch operations.</div>
+      </div>
+
+      <div class="feature-card reveal" style="transition-delay:0.25s">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="feature-title">QUALITY SELECTION</div>
+        <div class="feature-text">4K UHD, 1080p Full HD, 720p HD, 480p SD, and audio-only extraction. You choose the resolution and codec.</div>
+      </div>
+
+      <div class="feature-card reveal" style="transition-delay:0.3s">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        </div>
+        <div class="feature-title">AUTO-ROLLBACK</div>
+        <div class="feature-text">Broken modules automatically revert to the last known working version. Zero downtime. Zero manual intervention.</div>
+      </div>
+
+      <div class="feature-card reveal" style="transition-delay:0.35s">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div class="feature-title">HEALTH MONITORING</div>
+        <div class="feature-text">Continuous module validation and error tracking. Dashboard showing each head's status. Proactive failure detection.</div>
+      </div>
+
+      <div class="feature-card reveal" style="transition-delay:0.4s">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div class="feature-title">ELECTRON GUI</div>
+        <div class="feature-text">OLED-black interface with green accent theme. Module management sidebar. Search, queue, and download — all in one window.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ============ 03 // TECH STACK ============ -->
+<section class="section tech-section" id="tech">
+  <div class="section-inner" style="text-align:center;">
+    <div class="section-label reveal" style="justify-content:center;">03 // TECH STACK</div>
+    <h2 class="section-title reveal" style="margin-left:auto;margin-right:auto;">Forged in Venom</h2>
+    <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Python at the core. Electron for the face. Every dependency chosen for one purpose: survival.</p>
+
+    <div class="tech-grid reveal">
+      <div class="tech-badge"><span class="tech-dot"></span>Python 3.12</div>
+      <div class="tech-badge"><span class="tech-dot"></span>yt-dlp</div>
+      <div class="tech-badge"><span class="tech-dot"></span>Electron</div>
+      <div class="tech-badge"><span class="tech-dot"></span>ONNX</div>
+      <div class="tech-badge"><span class="tech-dot"></span>Devine</div>
+      <div class="tech-badge"><span class="tech-dot"></span>FFmpeg</div>
+      <div class="tech-badge"><span class="tech-dot"></span>GitHub API</div>
+      <div class="tech-badge"><span class="tech-dot"></span>WebSocket</div>
+    </div>
+
+    <div class="arch-diagram reveal">
+      <div style="text-align:center;margin-bottom:1rem;color:var(--green-vivid);font-size:0.8rem;letter-spacing:0.15em;">ARCHITECTURE</div>
+      <div class="arch-row">
+        <div class="arch-box highlight">Electron UI</div>
+      </div>
+      <div class="arch-row"><span class="arch-arrow">&#x2193;</span></div>
+      <div class="arch-row">
+        <div class="arch-box highlight">Python Bridge (WebSocket IPC)</div>
+      </div>
+      <div class="arch-row"><span class="arch-arrow">&#x2193;</span></div>
+      <div class="arch-row">
+        <div class="arch-box">Module Updater (GitHub API)</div>
+      </div>
+      <div class="arch-row"><span class="arch-arrow">&#x2193;</span></div>
+      <div class="arch-row">
+        <div class="arch-box">Netflix Head</div>
+        <div class="arch-box">Prime Head</div>
+        <div class="arch-box">YouTube Head</div>
+        <div class="arch-box">1800+ Heads</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ============ 04 // SELF-HEALING ============ -->
+<section class="section" id="healing">
+  <div class="section-inner" style="text-align:center;">
+    <div class="section-label reveal" style="justify-content:center;">04 // SELF-HEALING</div>
+    <h2 class="section-title reveal" style="margin-left:auto;margin-right:auto;">The Regeneration System</h2>
+    <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Cut off one head. Two more grow back. Modules check GitHub on launch, compare hashes, download updates, validate before activating, and auto-rollback on failure.</p>
+
+    <div class="pipeline reveal">
+      <div class="pipeline-node"><span class="node-icon"></span>CHECK — Compare module hashes against GitHub repo</div>
+      <div class="pipeline-connector"></div>
+      <div class="pipeline-node"><span class="node-icon"></span>DOWNLOAD — Fetch updated module from remote</div>
+      <div class="pipeline-connector"></div>
+      <div class="pipeline-node"><span class="node-icon"></span>VALIDATE — Run integrity checks and test execution</div>
+      <div class="pipeline-connector"></div>
+      <div class="pipeline-node" style="border-color:var(--green-bright);box-shadow:var(--glow-medium);"><span class="node-icon"></span>ACTIVATE — Hot-swap into running system</div>
+      <div class="pipeline-connector"></div>
+      <div class="pipeline-node" style="border-color:rgba(255,100,100,0.4);"><span class="node-icon" style="background:#ff6464;box-shadow:0 0 8px #ff6464;"></span>ROLLBACK — Revert to last working version on failure</div>
+    </div>
+
+    <div style="margin-top:3rem;" class="reveal">
+      <div style="font-family:var(--font-display);font-size:0.85rem;color:var(--green-vivid);letter-spacing:0.1em;margin-bottom:1rem;">REGENERATION CYCLE</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.8rem;justify-content:center;">
+        <div style="padding:0.5rem 1rem;background:var(--bg-raised);border:1px solid var(--green-muted);border-radius:6px;font-family:var(--font-mono);font-size:0.75rem;color:var(--green-vivid);">Launch Check</div>
+        <div style="padding:0.5rem 1rem;background:var(--bg-raised);border:1px solid var(--green-muted);border-radius:6px;font-family:var(--font-mono);font-size:0.75rem;color:var(--green-vivid);">Hash Compare</div>
+        <div style="padding:0.5rem 1rem;background:var(--bg-raised);border:1px solid var(--green-dim);border-radius:6px;font-family:var(--font-mono);font-size:0.75rem;color:var(--green-hot);">Delta Download</div>
+        <div style="padding:0.5rem 1rem;background:var(--bg-raised);border:1px solid var(--green-dim);border-radius:6px;font-family:var(--font-mono);font-size:0.75rem;color:var(--green-hot);">Sandbox Test</div>
+        <div style="padding:0.5rem 1rem;background:var(--bg-raised);border:1px solid var(--green-dim);border-radius:6px;font-family:var(--font-mono);font-size:0.75rem;color:var(--green-hot);">Hot Swap</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ============ 05 // DOWNLOAD ============ -->
+<section class="section download-section" id="download">
+  <div class="section-inner">
+    <div class="section-label reveal" style="justify-content:center;">05 // DOWNLOAD</div>
+    <h2 class="download-title reveal">Ready to Unleash<br>the Beast?</h2>
+    <p class="download-sub reveal">Free. Open source. The hydra awaits.</p>
+
+    <div class="download-buttons reveal">
+      <a href="https://github.com/EmperorBadussy/hydra/releases" class="btn-download" target="_blank">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>DOWNLOAD FOR WINDOWS</span>
+      </a>
+    </div>
+
+    <div class="reveal">
+      <div style="font-family:var(--font-mono);font-size:0.7rem;color:var(--green-muted);margin-bottom:0.3rem;">v0.1.0 &bull; Windows 10/11 (x64)</div>
+    </div>
+
+    <div class="sys-req reveal">
+      <strong style="color:var(--green-vivid);">System Requirements</strong><br>
+      Windows 10+ (64-bit) &bull; Python 3.12+ &bull; FFmpeg &bull; 4GB RAM
+    </div>
+
+    <a href="https://github.com/EmperorBadussy/hydra" class="github-link reveal" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+      View on GitHub
+    </a>
+
+    <div style="margin-top:2rem;" class="reveal">
+      <a href="https://emperorbadussy.github.io/suite/" class="companion-link" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        Part of THE SUITE &rarr; Explore Hub
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMMAND PALETTE ============ -->
+<div class="cmd-palette-overlay" id="cmdPalette">
+  <div class="cmd-palette">
+    <input type="text" id="cmdInput" placeholder="Type a command..." autocomplete="off">
+    <div class="cmd-results" id="cmdResults"></div>
+    <div class="cmd-hint">&#8593;&#8595; Navigate &middot; Enter Select &middot; Esc Close</div>
+  </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">HYDRA</div>
+      <div class="footer-tagline">Cut off one head. Two more grow back.</div>
+    </div>
+    <ul class="footer-links">
+      <li><a href="#how-it-works">The Heads</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#tech">Tech Stack</a></li>
+      <li><a href="#healing">Self-Healing</a></li>
+      <li><a href="#download">Download</a></li>
+      <li><a href="https://github.com/EmperorBadussy/hydra" target="_blank">GitHub</a></li>
+      <li><a href="https://emperorbadussy.github.io/suite/" target="_blank">THE SUITE</a></li>
+    </ul>
+    <div style="width:100%;text-align:center;margin-top:1rem;"><a href="https://emperorbadussy.github.io/suite/" style="font-family:var(--font-display);font-size:0.6rem;letter-spacing:0.12em;color:var(--green-muted);text-decoration:none;border:1px solid var(--green-dim);padding:0.3rem 0.8rem;border-radius:4px;transition:all 0.3s;" onmouseover="this.style.color='var(--green-vivid)';this.style.borderColor='var(--green-bright)';this.style.boxShadow='0 0 12px rgba(52,211,153,0.3)'" onmouseout="this.style.color='';this.style.borderColor='';this.style.boxShadow=''">PART OF THE SUITE</a></div>
+    <div class="footer-copy">&copy; 2077 HYDRA. Free and open source software.</div>
+  </div>
+</footer>
+
+<script>
+// ============ HERO TITLE CHARACTER ANIMATION ============
+(function() {
+  var title = document.getElementById('heroTitle');
+  var text = 'HYDRA';
+  var html = '';
+  var delay = 0.4;
+  for (var i = 0; i < text.length; i++) {
+    if (text[i] === ' ') { html += ' '; }
+    else { html += '<span class="char" style="--d:' + delay.toFixed(2) + 's">' + text[i] + '</span>'; delay += 0.06; }
+  }
+  title.innerHTML = html;
+})();
+
+// ============ TYPED TAGLINE EFFECT ============
+(function() {
+  var el = document.getElementById('heroTagline');
+  var text = 'Cut off one head. Two more grow back.';
+  el.textContent = '';
+  el.style.borderRight = '2px solid var(--green-vivid)';
+  var i = 0;
+  setTimeout(function() {
+    var interval = setInterval(function() {
+      el.textContent = text.slice(0, i + 1);
+      i++;
+      if (i >= text.length) {
+        clearInterval(interval);
+        setTimeout(function() { el.style.borderRight = 'none'; }, 1500);
+      }
+    }, 50);
+  }, 1200);
+})();
+
+// ============ HERO CANVAS — HYDRA NEURAL NETWORK ============
+(function() {
+  var canvas = document.getElementById('heroCanvas');
+  var ctx = canvas.getContext('2d');
+  var w, h, nodes = [], mouse = { x: -999, y: -999 };
+
+  function resize() { w = canvas.width = canvas.offsetWidth; h = canvas.height = canvas.offsetHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Create hydra network nodes — clustered heads with branching connections
+  var headCenters = [];
+  for (var hc = 0; hc < 7; hc++) {
+    headCenters.push({ x: Math.random(), y: 0.2 + Math.random() * 0.6 });
+  }
+
+  for (var i = 0; i < 120; i++) {
+    var hc2 = headCenters[Math.floor(Math.random() * headCenters.length)];
+    nodes.push({
+      x: (hc2.x + (Math.random() - 0.5) * 0.3) * 2000,
+      y: (hc2.y + (Math.random() - 0.5) * 0.3) * 2000,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      size: Math.random() * 2.5 + 0.5,
+      alpha: Math.random() * 0.5 + 0.1,
+      pulse: Math.random() * Math.PI * 2,
+      head: Math.floor(Math.random() * headCenters.length)
+    });
+  }
+
+  document.addEventListener('mousemove', function(e) { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+  function animate(time) {
+    ctx.clearRect(0, 0, w, h);
+
+    // Subtle radial glow from center
+    var grad = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, w * 0.5);
+    grad.addColorStop(0, 'rgba(34, 197, 94, 0.04)');
+    grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Update and draw nodes
+    nodes.forEach(function(n) {
+      n.x += n.vx;
+      n.y += n.vy + Math.sin(time * 0.001 + n.pulse) * 0.05;
+      if (n.x < -10) n.x = w + 10;
+      if (n.x > w + 10) n.x = -10;
+      if (n.y < -10) n.y = h + 10;
+      if (n.y > h + 10) n.y = -10;
+
+      var dx = mouse.x - n.x;
+      var dy = mouse.y - n.y;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+      var glow = dist < 200 ? (1 - dist / 200) * 0.6 : 0;
+      var pulseScale = 1 + Math.sin(time * 0.002 + n.pulse) * 0.2;
+
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.size * pulseScale * (1 + glow), 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(110, 231, 160, ' + (n.alpha + glow) + ')';
+      ctx.fill();
+
+      if (n.size > 1 || glow > 0.1) {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.size * 4, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(52, 211, 153, ' + ((n.alpha + glow) * 0.12) + ')';
+        ctx.fill();
+      }
+    });
+
+    // Draw connections — multi-headed branching network
+    for (var i = 0; i < nodes.length; i++) {
+      for (var j = i + 1; j < nodes.length; j++) {
+        var dx2 = nodes[i].x - nodes[j].x;
+        var dy2 = nodes[i].y - nodes[j].y;
+        var dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+        var maxDist = nodes[i].head === nodes[j].head ? 150 : 100;
+        if (dist2 < maxDist) {
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          var lineAlpha = nodes[i].head === nodes[j].head ? 0.12 : 0.04;
+          ctx.strokeStyle = 'rgba(34, 197, 94, ' + (lineAlpha * (1 - dist2 / maxDist)) + ')';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+})();
+
+// ============ CURSOR GLOW ============
+(function() {
+  var glow = document.getElementById('cursorGlow');
+  var mx = 0, my = 0, cx = 0, cy = 0;
+  document.addEventListener('mousemove', function(e) { mx = e.clientX; my = e.clientY; });
+  function update() { cx += (mx - cx) * 0.08; cy += (my - cy) * 0.08; glow.style.left = cx + 'px'; glow.style.top = cy + 'px'; requestAnimationFrame(update); }
+  update();
+  if ('ontouchstart' in window) glow.style.display = 'none';
+})();
+
+// ============ NAV SCROLL EFFECT ============
+(function() {
+  var nav = document.getElementById('nav');
+  window.addEventListener('scroll', function() { nav.classList.toggle('scrolled', window.scrollY > 50); });
+})();
+
+// ============ MOBILE MENU ============
+function closeMobile() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('menuToggle').classList.remove('active');
+}
+document.getElementById('menuToggle').addEventListener('click', function() {
+  this.classList.toggle('active');
+  document.getElementById('mobileMenu').classList.toggle('open');
+});
+
+// ============ SCROLL REVEAL ============
+(function() {
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(function(el) { observer.observe(el); });
+})();
+
+// ============ STEP CARD CANVAS ANIMATIONS ============
+(function() {
+  var canvases = document.querySelectorAll('.step-canvas');
+  var vizData = [];
+
+  canvases.forEach(function(c) {
+    var rect = c.parentElement.getBoundingClientRect();
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    c.width = rect.width * dpr;
+    c.height = rect.height * dpr;
+    var ctx2 = c.getContext('2d');
+    ctx2.scale(dpr, dpr);
+    var cw = rect.width, ch = rect.height;
+    var data = { c: c, ctx: ctx2, w: cw, h: ch, type: c.dataset.step, hover: false, particles: [] };
+
+    if (data.type === 'search') {
+      for (var si = 0; si < 20; si++) {
+        data.particles.push({ angle: Math.random() * Math.PI * 2, radius: 20 + Math.random() * 25, speed: 0.005 + Math.random() * 0.01, size: 1 + Math.random() * 2, alpha: 0.3 + Math.random() * 0.5 });
+      }
+    } else if (data.type === 'select') {
+      data.cards = [];
+      for (var qi = 0; qi < 5; qi++) { data.cards.push({ y: 0, targetY: qi * 22, alpha: 0 }); }
+    }
+
+    c.parentElement.addEventListener('mouseenter', function() { data.hover = true; });
+    c.parentElement.addEventListener('mouseleave', function() { data.hover = false; });
+    vizData.push(data);
+  });
+
+  function drawSearch(v, t) {
+    var ctx2 = v.ctx, cw = v.w, ch = v.h;
+    ctx2.clearRect(0, 0, cw, ch);
+    var ccx = cw / 2, ccy = ch / 2 - 8, br = 28;
+    for (var ri = 0; ri < (v.hover ? 4 : 3); ri++) {
+      var phase = (t * 0.001 + ri * 1.2) % 4;
+      var r = br + phase * 18;
+      ctx2.beginPath(); ctx2.arc(ccx, ccy, r, 0, Math.PI * 2);
+      ctx2.strokeStyle = 'rgba(52, 211, 153, ' + Math.max(0, 0.4 - phase * 0.1) + ')';
+      ctx2.lineWidth = 1.5; ctx2.stroke();
+    }
+    ctx2.beginPath(); ctx2.arc(ccx, ccy, br - 6, 0, Math.PI * 2);
+    ctx2.strokeStyle = 'rgba(110, 231, 160, 0.7)'; ctx2.lineWidth = 2.5; ctx2.stroke();
+    var ha = Math.PI * 0.25;
+    ctx2.beginPath(); ctx2.moveTo(ccx + Math.cos(ha) * (br - 4), ccy + Math.sin(ha) * (br - 4));
+    ctx2.lineTo(ccx + Math.cos(ha) * (br - 4) + 16, ccy + Math.sin(ha) * (br - 4) + 16);
+    ctx2.strokeStyle = 'rgba(110, 231, 160, 0.7)'; ctx2.lineWidth = 3; ctx2.lineCap = 'round'; ctx2.stroke();
+    v.particles.forEach(function(p) {
+      p.angle += p.speed * (v.hover ? 2 : 1);
+      ctx2.beginPath(); ctx2.arc(ccx + Math.cos(p.angle) * p.radius, ccy + Math.sin(p.angle) * p.radius, p.size, 0, Math.PI * 2);
+      ctx2.fillStyle = 'rgba(110, 231, 160, ' + p.alpha + ')'; ctx2.fill();
+    });
+  }
+
+  function drawSelect(v, t) {
+    var ctx2 = v.ctx, cw = v.w, ch = v.h;
+    ctx2.clearRect(0, 0, cw, ch);
+    var labels = ['4K UHD', '1080p', '720p', '480p', 'Audio'];
+    var ccx = cw / 2, startY = ch / 2 - 50, cardW = 80, cardH = 16;
+    var cycle = (t * 0.001) % 5;
+    var sel = Math.floor(cycle);
+    for (var qi = 0; qi < 5; qi++) {
+      var y = startY + qi * (cardH + 6);
+      var isSel = qi === sel;
+      ctx2.fillStyle = isSel ? 'rgba(34, 197, 94, 0.25)' : 'rgba(34, 197, 94, 0.08)';
+      ctx2.strokeStyle = isSel ? 'rgba(110, 231, 160, 0.9)' : 'rgba(52, 211, 153, 0.3)';
+      ctx2.lineWidth = isSel ? 1.5 : 1;
+      ctx2.beginPath(); ctx2.roundRect(ccx - cardW / 2, y, cardW, cardH, 3); ctx2.fill(); ctx2.stroke();
+      ctx2.fillStyle = isSel ? 'rgba(236, 255, 240, 0.9)' : 'rgba(110, 231, 160, 0.5)';
+      ctx2.font = '500 8px Orbitron, sans-serif'; ctx2.textAlign = 'center';
+      ctx2.fillText(labels[qi], ccx, y + cardH / 2 + 3);
+    }
+  }
+
+  function drawDownload(v, t) {
+    var ctx2 = v.ctx, cw = v.w, ch = v.h;
+    ctx2.clearRect(0, 0, cw, ch);
+    var barW = cw * 0.6, barH = 8;
+    var bx = (cw - barW) / 2, by = ch / 2 - barH / 2;
+    var spd = v.hover ? 1.5 : 1;
+    var progress = ((t * 0.0004 * spd) % 1);
+    ctx2.fillStyle = 'rgba(13, 54, 13, 0.6)'; ctx2.beginPath(); ctx2.roundRect(bx, by, barW, barH, 4); ctx2.fill();
+    ctx2.fillStyle = 'rgba(52, 211, 153, 0.8)'; ctx2.beginPath(); ctx2.roundRect(bx, by, barW * progress, barH, 4); ctx2.fill();
+    var pg = ctx2.createRadialGradient(bx + barW * progress, by + barH / 2, 0, bx + barW * progress, by + barH / 2, 30);
+    pg.addColorStop(0, 'rgba(52, 211, 153, 0.4)'); pg.addColorStop(1, 'transparent');
+    ctx2.fillStyle = pg; ctx2.fillRect(bx + barW * progress - 30, by - 20, 60, barH + 40);
+    ctx2.font = '500 12px Orbitron, sans-serif'; ctx2.fillStyle = 'rgba(110, 231, 160, 0.8)'; ctx2.textAlign = 'center';
+    ctx2.fillText(Math.floor(progress * 100) + '%', cw / 2, by + barH + 24);
+  }
+
+  function drawHeal(v, t) {
+    var ctx2 = v.ctx, cw = v.w, ch = v.h;
+    ctx2.clearRect(0, 0, cw, ch);
+    var ccx = cw / 2, ccy = ch / 2;
+    var cycle = (t * 0.0008) % 4;
+    // DNA-like double helix representing regeneration
+    for (var x = 0; x < cw; x += 2) {
+      var phase = x * 0.05 + t * 0.002;
+      var y1 = ccy + Math.sin(phase) * 25;
+      var y2 = ccy + Math.sin(phase + Math.PI) * 25;
+      var a = 0.3 + Math.sin(phase * 0.5) * 0.2;
+      ctx2.fillStyle = 'rgba(52, 211, 153, ' + a + ')';
+      ctx2.fillRect(x, y1, 2, 2);
+      ctx2.fillStyle = 'rgba(110, 231, 160, ' + a + ')';
+      ctx2.fillRect(x, y2, 2, 2);
+      // Cross connections
+      if (x % 16 === 0) {
+        ctx2.beginPath(); ctx2.moveTo(x, y1); ctx2.lineTo(x, y2);
+        ctx2.strokeStyle = 'rgba(34, 197, 94, 0.15)'; ctx2.lineWidth = 1; ctx2.stroke();
+      }
+    }
+    // Pulsing center node
+    var pr = 8 + Math.sin(t * 0.003) * 3;
+    ctx2.beginPath(); ctx2.arc(ccx, ccy, pr, 0, Math.PI * 2);
+    ctx2.fillStyle = 'rgba(110, 231, 160, 0.4)'; ctx2.fill();
+    ctx2.strokeStyle = 'rgba(110, 231, 160, 0.6)'; ctx2.lineWidth = 1.5; ctx2.stroke();
+    // Regeneration pulse rings
+    for (var rr = 0; rr < 3; rr++) {
+      var rPhase = (t * 0.001 + rr * 1.5) % 3;
+      var rRad = pr + rPhase * 20;
+      ctx2.beginPath(); ctx2.arc(ccx, ccy, rRad, 0, Math.PI * 2);
+      ctx2.strokeStyle = 'rgba(52, 211, 153, ' + Math.max(0, 0.4 - rPhase * 0.13) + ')';
+      ctx2.lineWidth = 1; ctx2.stroke();
+    }
+  }
+
+  function animateSteps(t) {
+    vizData.forEach(function(v) {
+      switch (v.type) {
+        case 'search': drawSearch(v, t); break;
+        case 'select': drawSelect(v, t); break;
+        case 'download': drawDownload(v, t); break;
+        case 'heal': drawHeal(v, t); break;
+      }
+    });
+    requestAnimationFrame(animateSteps);
+  }
+  requestAnimationFrame(animateSteps);
+})();
+
+// ============ CLICK RIPPLE EFFECT ============
+document.addEventListener('click', function(e) {
+  var ripple = document.createElement('div');
+  ripple.className = 'click-ripple';
+  ripple.style.left = (e.clientX - 150) + 'px';
+  ripple.style.top = (e.clientY - 150) + 'px';
+  document.body.appendChild(ripple);
+  setTimeout(function() { ripple.remove(); }, 600);
+});
+
+// ============ SMOOTH SCROLL ============
+document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+  a.addEventListener('click', function(e) {
+    var href = this.getAttribute('href');
+    if (href === '#') return;
+    var target = document.querySelector(href);
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+
+// ============ PARALLAX ON TITLES ============
+(function() {
+  var titles = document.querySelectorAll('.section-title, .download-title');
+  window.addEventListener('scroll', function() {
+    var vc = window.innerHeight / 2;
+    titles.forEach(function(el) {
+      var rect = el.getBoundingClientRect();
+      var offset = (rect.top + rect.height / 2 - vc) * 0.03;
+      el.style.transform = 'translateY(' + offset + 'px)';
+    });
+  });
+})();
+
+// ============ 3D TILT CARDS ============
+(function() {
+  var cards = document.querySelectorAll('.feature-card, .step-card');
+  cards.forEach(function(card) {
+    card.addEventListener('mousemove', function(e) {
+      var rect = card.getBoundingClientRect();
+      var x = (e.clientX - rect.left) / rect.width - 0.5;
+      var y = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.transform = 'perspective(600px) rotateY(' + (x * 8) + 'deg) rotateX(' + (-y * 8) + 'deg) translateY(-4px)';
+      card.style.transition = 'transform 0.1s ease';
+    });
+    card.addEventListener('mouseleave', function() {
+      card.style.transform = '';
+      card.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    });
+  });
+})();
+
+// ============ MAGNETIC BUTTONS ============
+(function() {
+  var btns = document.querySelectorAll('.btn-primary, .btn-download');
+  btns.forEach(function(btn) {
+    btn.addEventListener('mousemove', function(e) {
+      var rect = btn.getBoundingClientRect();
+      var x = e.clientX - rect.left - rect.width / 2;
+      var y = e.clientY - rect.top - rect.height / 2;
+      btn.style.transform = 'translate(' + (x * 0.15) + 'px, ' + (y * 0.15) + 'px) scale(1.03)';
+    });
+    btn.addEventListener('mouseleave', function() {
+      btn.style.transform = '';
+      btn.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      setTimeout(function() { btn.style.transition = ''; }, 400);
+    });
+  });
+})();
+
+// ============ SCROLL PROGRESS BAR ============
+(function(){var b=document.getElementById('scrollProgress');if(!b)return;window.addEventListener('scroll',function(){var h=document.documentElement.scrollHeight-window.innerHeight;b.style.width=(h>0?(window.scrollY/h)*100:0)+'%';});})();
+
+// ============ GLITCH TITLE ============
+(function(){setTimeout(function(){var t=document.getElementById('heroTitle');if(t)t.classList.add('hero-title-glitch');},2500);})();
+
+// ============ TEXT SCRAMBLE REVEAL ============
+(function() {
+  var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+  var scrambleEls = document.querySelectorAll('.section-title, .download-title');
+  var scrambled = new Set();
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !scrambled.has(entry.target)) {
+        scrambled.add(entry.target);
+        var el = entry.target;
+        var original = el.textContent;
+        var iterations = 0;
+        var interval = setInterval(function() {
+          el.textContent = original.split('').map(function(char, i) {
+            if (i < iterations / 3) return original[i];
+            if (char === ' ' || char === '\n') return char;
+            return chars[Math.floor(Math.random() * chars.length)];
+          }).join('');
+          iterations++;
+          if (iterations > original.length * 3) { el.textContent = original; clearInterval(interval); }
+        }, 30);
+      }
+    });
+  }, { threshold: 0.3 });
+  scrambleEls.forEach(function(el) { observer.observe(el); });
+})();
+
+// ============ KONAMI CODE EASTER EGG ============
+(function() {
+  var code = [38,38,40,40,37,39,37,39,66,65];
+  var pos = 0;
+  document.addEventListener('keydown', function(e) {
+    if (e.keyCode === code[pos]) {
+      pos++;
+      if (pos === code.length) {
+        pos = 0;
+        var overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;background:rgba(0,255,0,0.08);animation:breachFlash 0.15s infinite;';
+        var style = document.createElement('style');
+        style.textContent = '@keyframes breachFlash{0%,100%{opacity:1}50%{opacity:0.3}} .breach-text{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100000;font-family:var(--font-display);font-size:clamp(2rem,8vw,5rem);color:#22C55E;text-shadow:0 0 20px #22C55E,0 0 60px #22C55E;letter-spacing:0.2em;pointer-events:none;animation:breachGlitch 0.1s infinite;}@keyframes breachGlitch{0%{transform:translate(-50%,-50%)}25%{transform:translate(-48%,-52%)}50%{transform:translate(-52%,-48%)}75%{transform:translate(-50%,-50%) skewX(2deg)}}';
+        document.head.appendChild(style);
+        document.body.appendChild(overlay);
+        var text = document.createElement('div');
+        text.className = 'breach-text';
+        text.textContent = '[ HAIL HYDRA ]';
+        document.body.appendChild(text);
+        document.documentElement.style.filter = 'hue-rotate(90deg) saturate(2)';
+        setTimeout(function() { overlay.remove(); text.remove(); style.remove(); document.documentElement.style.filter = ''; }, 3000);
+      }
+    } else { pos = 0; }
+  });
+})();
+
+// ============ MOUSE PARTICLE TRAIL ============
+(function() {
+  var particles = [];
+  document.addEventListener('mousemove', function(e) {
+    if (Math.random() > 0.6) return;
+    particles.push({ x: e.clientX, y: e.clientY, life: 1, size: Math.random() * 2 + 0.5 });
+  });
+  var trailCanvas = document.createElement('canvas');
+  trailCanvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:99996;pointer-events:none;';
+  document.body.appendChild(trailCanvas);
+  var tctx = trailCanvas.getContext('2d');
+  function resizeTrail() { trailCanvas.width = window.innerWidth; trailCanvas.height = window.innerHeight; }
+  resizeTrail();
+  window.addEventListener('resize', resizeTrail);
+  function drawTrail() {
+    tctx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
+    for (var i = particles.length - 1; i >= 0; i--) {
+      var p = particles[i];
+      p.life -= 0.025;
+      p.y -= 0.3;
+      if (p.life <= 0) { particles.splice(i, 1); continue; }
+      tctx.beginPath();
+      tctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+      tctx.fillStyle = 'rgba(52, 211, 153, ' + (p.life * 0.5) + ')';
+      tctx.fill();
+    }
+    requestAnimationFrame(drawTrail);
+  }
+  drawTrail();
+})();
+
+// ============ LOADING SCREEN ============
+(function() {
+  var bar = document.getElementById('loadBar');
+  var screen = document.getElementById('loadingScreen');
+  var progress = 0;
+  var interval = setInterval(function() {
+    progress += Math.random() * 25 + 10;
+    if (progress > 100) progress = 100;
+    bar.style.width = progress + '%';
+    if (progress >= 100) {
+      clearInterval(interval);
+      setTimeout(function() {
+        screen.style.opacity = '0';
+        screen.style.visibility = 'hidden';
+        setTimeout(function() { screen.remove(); }, 500);
+      }, 300);
+    }
+  }, 200);
+})();
+
+// ============ DECLASSIFIED MODE ============
+(function() {
+  var btn = document.getElementById('declassifiedBtn');
+  btn.addEventListener('click', function() {
+    document.body.classList.toggle('declassified');
+    btn.textContent = document.body.classList.contains('declassified') ? '[DECLASSIFIED]' : '[CLASSIFIED]';
+  });
+})();
+
+// ============ COMMAND PALETTE ============
+(function() {
+  var overlay = document.getElementById('cmdPalette');
+  var input = document.getElementById('cmdInput');
+  var results = document.getElementById('cmdResults');
+  var activeIdx = 0;
+  var commands = [
+    { label: 'Go to Top', action: function() { window.scrollTo({ top: 0, behavior: 'smooth' }); } },
+    { label: 'Navigate to The Heads', action: function() { document.getElementById('how-it-works').scrollIntoView({ behavior: 'smooth' }); } },
+    { label: 'Navigate to Features', action: function() { document.getElementById('features').scrollIntoView({ behavior: 'smooth' }); } },
+    { label: 'Navigate to Tech', action: function() { document.getElementById('tech').scrollIntoView({ behavior: 'smooth' }); } },
+    { label: 'Navigate to Self-Healing', action: function() { document.getElementById('healing').scrollIntoView({ behavior: 'smooth' }); } },
+    { label: 'Navigate to Download', action: function() { document.getElementById('download').scrollIntoView({ behavior: 'smooth' }); } },
+    { label: 'Toggle Declassified Mode', action: function() { document.getElementById('declassifiedBtn').click(); } },
+    { label: 'Visit GitHub', action: function() { window.open('https://github.com/EmperorBadussy/hydra', '_blank'); } },
+    { label: 'Visit AETHER', action: function() { portalNavigate('https://emperorbadussy.github.io/aether/'); }, portal: true },
+    { label: 'Visit CHARON', action: function() { portalNavigate('https://emperorbadussy.github.io/charon/'); }, portal: true },
+    { label: 'Visit FACELESS', action: function() { portalNavigate('https://emperorbadussy.github.io/phantom-face/'); }, portal: true },
+    { label: 'Visit THE SUITE Hub', action: function() { portalNavigate('https://emperorbadussy.github.io/suite/'); }, portal: true }
+  ];
+
+  function render(filter) {
+    var filtered = commands.filter(function(c) { return !filter || c.label.toLowerCase().indexOf(filter.toLowerCase()) !== -1; });
+    results.innerHTML = '';
+    activeIdx = Math.min(activeIdx, Math.max(0, filtered.length - 1));
+    filtered.forEach(function(cmd, i) {
+      var div = document.createElement('div');
+      div.className = 'cmd-item' + (i === activeIdx ? ' active' : '');
+      div.textContent = cmd.label;
+      if (cmd.portal) { var key = document.createElement('span'); key.className = 'cmd-key'; key.textContent = 'PORTAL'; div.appendChild(key); }
+      div.addEventListener('click', function() { execute(cmd); });
+      div.addEventListener('mouseenter', function() { activeIdx = i; render(input.value); });
+      results.appendChild(div);
+    });
+    return filtered;
+  }
+
+  function execute(cmd) { close(); cmd.action(); }
+  function open() { overlay.classList.add('open'); input.value = ''; activeIdx = 0; render(''); setTimeout(function() { input.focus(); }, 50); }
+  function close() { overlay.classList.remove('open'); input.value = ''; }
+
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); if (overlay.classList.contains('open')) close(); else open(); }
+    if (!overlay.classList.contains('open')) return;
+    if (e.key === 'Escape') { close(); return; }
+    var items = results.querySelectorAll('.cmd-item');
+    if (e.key === 'ArrowDown') { e.preventDefault(); activeIdx = (activeIdx + 1) % items.length; render(input.value); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); activeIdx = (activeIdx - 1 + items.length) % items.length; render(input.value); }
+    else if (e.key === 'Enter') {
+      e.preventDefault();
+      var filtered = commands.filter(function(c) { return !input.value || c.label.toLowerCase().indexOf(input.value.toLowerCase()) !== -1; });
+      if (filtered[activeIdx]) execute(filtered[activeIdx]);
+    }
+  });
+
+  input.addEventListener('input', function() { activeIdx = 0; render(input.value); });
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) close(); });
+})();
+
+// ============ INTER-SITE PORTAL EFFECT ============
+function portalNavigate(url) {
+  document.body.classList.add('portal-out');
+  setTimeout(function() { window.location.href = url; }, 600);
+}
+
+(function() {
+  var suiteLinks = document.querySelectorAll('a[href*="emperorbadussy.github.io/aether"], a[href*="emperorbadussy.github.io/suite"], a[href*="emperorbadussy.github.io/phantom-face"], a[href*="emperorbadussy.github.io/charon"]');
+  suiteLinks.forEach(function(link) {
+    link.addEventListener('click', function(e) { e.preventDefault(); portalNavigate(link.href); });
+  });
+})();
+</script>
+</body>
+</html>
